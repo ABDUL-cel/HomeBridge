@@ -1222,3 +1222,47 @@ button {
     }
 
   }
+@media (max-width: 900px) {
+
+    .nav-links.mobile-show,
+    .nav-buttons.mobile-show {
+
+        display: flex;
+
+        position: absolute;
+
+        left: 0;
+
+        width: 100%;
+
+        background: var(--white);
+
+        padding: 20px 7%;
+
+        z-index: 100;
+
+    }
+
+    .nav-links.mobile-show {
+
+        top: 80px;
+
+        flex-direction: column;
+
+        gap: 20px;
+
+        border-top: 1px solid var(--border);
+
+    }
+
+    .nav-buttons.mobile-show {
+
+        top: 280px;
+
+        justify-content: center;
+
+        border-bottom: 1px solid var(--border);
+
+    }
+
+}
