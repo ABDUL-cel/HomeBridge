@@ -500,6 +500,23 @@
                 showToast('Failed to connect to server', true);
             }
         }
+        function payToPromote(amount, email) {
+  const handler = PaystackPop.setup({
+    key: 'pk_test_95e98d452733f190c4211604c4fb1bc96b412ff1',
+    email: email,
+    amount: amount * 100, // Amount in kobo
+    currency: 'NGN',
+    onClose: function() {
+      alert('Transaction cancelled.');
+    },
+    callback: function(response) {
+      verifyPaymentOnServer(response.reference);
+    }
+  });
+
+  handler.openIframe();
+}
+
     </script>
 </body>
 
