@@ -67,15 +67,27 @@ exports.createProperty = async (req, res) => {
   try {
     const imagePaths = req.files ? req.files.map((file) => file.path || `/uploads/${file.filename}`) : [];
 
+    let locationData = req.body.location;
+    if (typeof locationData === 'string') {
+      try {
+        locationData = JSON.parse(locationData);
+      } catch (err) {
+        locationData = { address: locationData, area: locationData };
+      }
+    }
+
+    let featuresData = req.body.features;
+    if (typeof featuresData === 'string') {
+      featuresData = featuresData.split(',').map((item) => item.trim()).filter(Boolean);
+    }
+
     const propertyData = {
       ...req.body,
       owner: req.user._id,
       images: imagePaths,
+      location: locationData,
+      features: featuresData,
     };
-
-    if (typeof req.body.location === 'string') {
-      propertyData.location = JSON.parse(req.body.location);
-    }
 
     const property = await Property.create(propertyData);
 
@@ -102,6 +114,10 @@ exports.updateProperty = async (req, res) => {
 
     if (req.files && req.files.length > 0) {
       req.body.images = req.files.map((file) => file.path || `/uploads/${file.filename}`);
+    }
+
+    if (typeof req.body.features === 'string') {
+      req.body.features = req.body.features.split(',').map((item) => item.trim()).filter(Boolean);
     }
 
     property = await Property.findByIdAndUpdate(req.params.id, req.body, {
