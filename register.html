@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeBridge | Create Account</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="auth-container">
+        <div class="auth-card">
+
+            <a href="index.html" class="logo">
+                Home<span>Bridge</span>
+            </a>
+
+            <h2>Create an Account</h2>
+            <p>Sign up to start finding or listing properties.</p>
+
+            <form id="registerForm">
+
+                <div class="input-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" placeholder="John Doe" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="name@example.com" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="role">I am a...</label>
+                    <select id="role">
+                        <option value="tenant">Tenant / Buyer</option>
+                        <option value="landlord">Landlord / Agent</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="primary-btn auth-btn">Get Started</button>
+
+            </form>
+
+            <p class="auth-switch">
+                Already have an account? <a href="login.html">Log in</a>
+            </p>
+
+            <p id="responseMessage" class="response-message"></p>
+
+        </div>
+    </main>
+
+    <script>
+        const form = document.getElementById('registerForm');
+        const messageBox = document.getElementById('responseMessage');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
+
+            messageBox.textContent = 'Registering...';
+            messageBox.style.color = '#555';
+
+            try {
+                // Connecting directly to your live Render backend
+                const response = await fetch('https://homebridge-cu1l.onrender.com/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ fullName, email, password, role })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    messageBox.style.color = 'green';
+                    messageBox.textContent = 'Registration successful! Redirecting to login...';
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                } else {
+                    messageBox.style.color = 'red';
+                    messageBox.textContent = data.message || 'Registration failed. Please try again.';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                messageBox.style.color = 'red';
+                messageBox.textContent = 'Unable to connect to server. Please check your internet or try again later.';
+            }
+        });
+    </script>
+
+</body>
+
+</html>
