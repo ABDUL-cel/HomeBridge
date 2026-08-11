@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Landlord Dashboard - HomeBridge</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+    body { background-color: #f8fafc; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; }
+    header { background: #ffffff; padding: 16px 32px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 22px; font-weight: 700; color: #0284c7; text-decoration: none; }
+    .logo span { color: #0f172a; }
+    .container { max-width: 1000px; width: 90%; margin: 30px auto; flex: 1; }
+    .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .btn-add { background: #0284c7; color: #fff; text-decoration: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; font-size: 14px; }
+    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; }
+    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+    th { background: #f1f5f9; color: #475569; font-weight: 600; }
+    .badge-available { background: #dcfce7; color: #15803d; padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 12px; }
+    .badge-rented { background: #ffe4e6; color: #be123c; padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 12px; }
+    .btn-action { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/index.html" class="logo">Home<span>Bridge</span></a>
+    <div class="nav-buttons"></div>
+  </header>
+
+  <main class="container">
+    <div class="header-bar">
+      <h2>My Property Listings</h2>
+      <a href="/add-property.html" class="btn-add">+ Add New Listing</a>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Property Title</th>
+          <th>Type</th>
+          <th>Price</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="myPropertiesTable">
+        <tr>
+          <td colspan="5" style="text-align: center; color: #64748b;">Loading your listings...</td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+
+  <script src="/js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const token = getToken();
+      if (!token) {
+        window.location.href = '/login.html';
+        return;
+      }
+
+      const tableBody = document.getElementById('myPropertiesTable');
+
+      try {
+        const res = await fetch('/api/properties/my-listings', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+
+        if (!data.success || data.data.length === 0) {
+          tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">You haven't listed any properties yet.</td></tr>`;
+          return;
+        }
+
+        tableBody.innerHTML = data.data.map(item => `
+          <tr>
+            <td style="font-weight: 600; color: #0f172a;">${item.title}</td>
+            <td>${item.propertyType}</td>
+            <td>₦${item.price.toLocaleString()}</td>
+            <td>
+              <span class="${item.status === 'available' ? 'badge-available' : 'badge-rented'}">
+                ${item.status.toUpperCase()}
+              </span>
+            </td>
+            <td>
+              <button onclick="toggleStatus('${item._id}', '${item.status}')" class="btn-action">
+                Mark as ${item.status === 'available' ? 'Rented' : 'Available'}
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    async function toggleStatus(id, currentStatus) {
+      const token = getToken();
+      const newStatus = currentStatus === 'available' ? 'rented' : 'available';
+
+      try {
+        const res = await fetch(`/api/properties/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ status: newStatus })
+        });
+        const data = await res.json();
+        if (data.success) {
+          window.location.reload();
+        }
+      } catch (err) {
+        alert('Failed to update property status');
+      }
+    }
+  </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Landlord Dashboard - HomeBridge</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+    body { background-color: #f8fafc; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; }
+    header { background: #ffffff; padding: 16px 32px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 22px; font-weight: 700; color: #0284c7; text-decoration: none; }
+    .logo span { color: #0f172a; }
+    .container { max-width: 1000px; width: 90%; margin: 30px auto; flex: 1; }
+    .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .btn-add { background: #0284c7; color: #fff; text-decoration: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; font-size: 14px; }
+    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; }
+    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+    th { background: #f1f5f9; color: #475569; font-weight: 600; }
+    .badge-available { background: #dcfce7; color: #15803d; padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 12px; }
+    .badge-rented { background: #ffe4e6; color: #be123c; padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 12px; }
+    .btn-action { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/index.html" class="logo">Home<span>Bridge</span></a>
+    <div class="nav-buttons"></div>
+  </header>
+
+  <main class="container">
+    <div class="header-bar">
+      <h2>My Property Listings</h2>
+      <a href="/add-property.html" class="btn-add">+ Add New Listing</a>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Property Title</th>
+          <th>Type</th>
+          <th>Price</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="myPropertiesTable">
+        <tr>
+          <td colspan="5" style="text-align: center; color: #64748b;">Loading your listings...</td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+
+  <script src="/js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const token = getToken();
+      if (!token) {
+        window.location.href = '/login.html';
+        return;
+      }
+
+      const tableBody = document.getElementById('myPropertiesTable');
+
+      try {
+        const res = await fetch('/api/properties/my-listings', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+
+        if (!data.success || data.data.length === 0) {
+          tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">You haven't listed any properties yet.</td></tr>`;
+          return;
+        }
+
+        tableBody.innerHTML = data.data.map(item => `
+          <tr>
+            <td style="font-weight: 600; color: #0f172a;">${item.title}</td>
+            <td>${item.propertyType}</td>
+            <td>₦${item.price.toLocaleString()}</td>
+            <td>
+              <span class="${item.status === 'available' ? 'badge-available' : 'badge-rented'}">
+                ${item.status.toUpperCase()}
+              </span>
+            </td>
+            <td>
+              <button onclick="toggleStatus('${item._id}', '${item.status}')" class="btn-action">
+                Mark as ${item.status === 'available' ? 'Rented' : 'Available'}
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    async function toggleStatus(id, currentStatus) {
+      const token = getToken();
+      const newStatus = currentStatus === 'available' ? 'rented' : 'available';
+
+      try {
+        const res = await fetch(`/api/properties/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ status: newStatus })
+        });
+        const data = await res.json();
+        if (data.success) {
+          window.location.reload();
+        }
+      } catch (err) {
+        alert('Failed to update property status');
+      }
+    }
+  </script>
+</body>
+</html>
