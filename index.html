@@ -4,418 +4,514 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HomeBridge | Welcome</title>
-    <!-- FontAwesome for eye-catching icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
 
-        body {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-            padding: 2rem 1rem;
-            position: relative;
-            overflow-x: hidden;
-        }
+    <meta name="description"
+        content="HomeBridge connects tenants with landlords and property agents to find the right place to call home.">
 
-        /* Ambient background glow */
-        body::before {
-            content: '';
-            position: absolute;
-            width: 350px;
-            height: 350px;
-            background: rgba(37, 99, 235, 0.25);
-            filter: blur(100px);
-            border-radius: 50%;
-            top: 10%;
-            left: 20%;
-            z-index: 0;
-        }
+    <title>HomeBridge | Find Your Place</title>
 
-        body::after {
-            content: '';
-            position: absolute;
-            width: 350px;
-            height: 350px;
-            background: rgba(16, 185, 129, 0.2);
-            filter: blur(100px);
-            border-radius: 50%;
-            bottom: 10%;
-            right: 20%;
-            z-index: 0;
-        }
-
-        .auth-card {
-            position: relative;
-            z-index: 10;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            width: 100%;
-            max-width: 460px;
-            padding: 3rem 2.5rem;
-            border-radius: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            text-align: center;
-        }
-
-        .brand-logo {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #0f172a;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .brand-logo span {
-            color: #2563eb;
-        }
-
-        /* Tab Switcher */
-        .tab-group {
-            display: flex;
-            background: #f1f5f9;
-            padding: 0.35rem;
-            border-radius: 14px;
-            margin-bottom: 2rem;
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 0.75rem;
-            border: none;
-            background: transparent;
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: #64748b;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .tab-btn.active {
-            background: #ffffff;
-            color: #2563eb;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-
-        .auth-header h2 {
-            font-size: 1.5rem;
-            color: #0f172a;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .auth-header p {
-            color: #64748b;
-            font-size: 0.9rem;
-            margin-bottom: 1.8rem;
-        }
-
-        /* Forms */
-        .form-section {
-            display: none;
-            text-align: left;
-        }
-
-        .form-section.active {
-            display: block;
-            animation: fadeIn 0.4s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .input-box {
-            margin-bottom: 1.25rem;
-        }
-
-        .input-box label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #334155;
-            margin-bottom: 0.4rem;
-        }
-
-        .input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .input-wrapper i {
-            position: absolute;
-            left: 1rem;
-            color: #94a3b8;
-            font-size: 1rem;
-            transition: color 0.3s ease;
-        }
-
-        .input-wrapper input, 
-        .input-wrapper select {
-            width: 100%;
-            padding: 0.85rem 1rem 0.85rem 2.8rem;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            outline: none;
-            background: #f8fafc;
-            color: #0f172a;
-            transition: all 0.3s ease;
-        }
-
-        .input-wrapper input:focus, 
-        .input-wrapper select:focus {
-            border-color: #2563eb;
-            background: #ffffff;
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-        }
-
-        .input-wrapper input:focus + i,
-        .input-wrapper select:focus + i {
-            color: #2563eb;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 0.95rem;
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            color: #ffffff;
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.6rem;
-            box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4);
-            transition: all 0.3s ease;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px -5px rgba(37, 99, 235, 0.5);
-        }
-
-        .response-msg {
-            margin-top: 1.2rem;
-            font-size: 0.9rem;
-            font-weight: 600;
-            text-align: center;
-            min-height: 24px;
-        }
-    </style>
+    <!-- AOS Animation Library for Scroll Effects -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <div class="auth-card">
+    <!-- ================= NAVBAR ================= -->
 
-        <a href="index.html" class="brand-logo">
-            <i class="fa-solid fa-house-chimney-window" style="color: #2563eb;"></i>
+    <header class="navbar">
+
+        <a href="#" class="logo">
             Home<span>Bridge</span>
         </a>
 
-        <!-- Tab Controls -->
-        <div class="tab-group">
-            <button class="tab-btn active" onclick="switchTab('login')">Log In</button>
-            <button class="tab-btn" onclick="switchTab('register')">Sign Up</button>
+        <nav class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#properties">Find a Home</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#list-property">List a Property</a>
+        </nav>
+
+        <div class="nav-buttons">
+            <a href="/login.html" class="login-btn">Log in</a>
+            <a href="/register.html" class="signup-btn">Get Started</a>
         </div>
 
-        <!-- LOG IN FORM -->
-        <div id="loginSection" class="form-section active">
-            <div class="auth-header">
-                <h2>Welcome back! 👋</h2>
-                <p>Enter your details to access your account.</p>
+        <button class="menu-btn" id="menuBtn">
+            ☰
+        </button>
+
+    </header>
+
+
+    <!-- ================= HERO SECTION ================= -->
+
+    <main>
+
+        <section class="hero" id="home">
+
+            <div class="hero-content" data-aos="fade-right">
+
+                <span class="hero-badge">
+                    🏠 Find a place you'll love
+                </span>
+
+                <h1>
+                    Your HomeBridge awaits:
+                    <span>connecting you to the properties you love.</span>
+                </h1>
+
+                <p>
+                    HomeBridge makes it easier to discover available homes,
+                    connect with trusted landlords and agents, and find a place
+                    that feels right for you.
+                </p>
+
+                <div class="hero-buttons">
+
+                    <a href="#properties" class="primary-btn">
+                        Find a Home
+                    </a>
+
+                    <a href="#list-property" class="secondary-btn">
+                        List Your Property
+                    </a>
+
+                </div>
+
             </div>
 
-            <form id="loginForm">
-                <div class="input-box">
-                    <label>Email Address</label>
-                    <div class="input-wrapper">
-                        <input type="email" id="loginEmail" placeholder="name@example.com" required>
-                        <i class="fa-regular fa-envelope"></i>
-                    </div>
+
+            <div class="hero-card" data-aos="fade-left">
+
+                <div class="search-header">
+                    <h3>Find your next home</h3>
+                    <p>Search available properties</p>
                 </div>
 
-                <div class="input-box">
-                    <label>Password</label>
-                    <div class="input-wrapper">
-                        <input type="password" id="loginPassword" placeholder="••••••••" required>
-                        <i class="fa-solid fa-lock"></i>
+                <form class="search-form">
+
+                    <div class="input-group">
+                        <label>Location</label>
+                        <input type="text" placeholder="e.g. Ilorin, Lagos">
                     </div>
-                </div>
 
-                <button type="submit" class="submit-btn">
-                    Log In <i class="fa-solid fa-arrow-right"></i>
-                </button>
-            </form>
-        </div>
+                    <div class="input-group">
+                        <label>Property Type</label>
 
-        <!-- REGISTER FORM -->
-        <div id="registerSection" class="form-section">
-            <div class="auth-header">
-                <h2>Create an account ✨</h2>
-                <p>Join HomeBridge to start exploring or listing homes.</p>
-            </div>
-
-            <form id="registerForm">
-                <div class="input-box">
-                    <label>Full Name</label>
-                    <div class="input-wrapper">
-                        <input type="text" id="regFullName" placeholder="Abdulazeez Khalid" required>
-                        <i class="fa-regular fa-user"></i>
-                    </div>
-                </div>
-
-                <div class="input-box">
-                    <label>Email Address</label>
-                    <div class="input-wrapper">
-                        <input type="email" id="regEmail" placeholder="name@example.com" required>
-                        <i class="fa-regular fa-envelope"></i>
-                    </div>
-                </div>
-
-                <div class="input-box">
-                    <label>Password</label>
-                    <div class="input-wrapper">
-                        <input type="password" id="regPassword" placeholder="••••••••" required>
-                        <i class="fa-solid fa-lock"></i>
-                    </div>
-                </div>
-
-                <div class="input-box">
-                    <label>I am a...</label>
-                    <div class="input-wrapper">
-                        <select id="regRole">
-                            <option value="tenant">🏠 Tenant / House Finder</option>
-                            <option value="landlord">🔑 Landlord / Agent</option>
+                        <select>
+                            <option>Any Property</option>
+                            <option>Apartment</option>
+                            <option>Duplex</option>
+                            <option>Self Contain</option>
+                            <option>Room</option>
                         </select>
-                        <i class="fa-solid fa-user-tag"></i>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Price Range</label>
+
+                        <select>
+                            <option>Any Price</option>
+                            <option>Under ₦500,000</option>
+                            <option>₦500,000 - ₦1,000,000</option>
+                            <option>Above ₦1,000,000</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="search-btn">
+                        Search Properties
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= STATS ================= -->
+
+        <section class="stats" data-aos="fade-up">
+
+            <div class="stat-item">
+                <h2>1,000+</h2>
+                <p>Properties Coming Soon</p>
+            </div>
+
+            <div class="stat-item">
+                <h2>500+</h2>
+                <p>Landlords & Agents</p>
+            </div>
+
+            <div class="stat-item">
+                <h2>10+</h2>
+                <p>Locations</p>
+            </div>
+
+            <div class="stat-item">
+                <h2>24/7</h2>
+                <p>Easy Access</p>
+            </div>
+
+        </section>
+
+
+        <!-- ================= FEATURED PROPERTIES ================= -->
+
+        <section class="properties-section" id="properties">
+
+            <div class="section-heading" data-aos="fade-up">
+
+                <div>
+                    <span class="section-label">
+                        EXPLORE HOMES
+                    </span>
+
+                    <h2>
+                        Find a place to call home
+                    </h2>
+                </div>
+
+                <a href="#" class="view-all">
+                    View All Properties →
+                </a>
+
+            </div>
+
+
+            <div class="property-grid">
+
+                <article class="property-card" data-aos="fade-up" data-aos-delay="100">
+
+                    <div class="property-image image-one">
+
+                        <span class="property-tag">
+                            Featured
+                        </span>
+
+                    </div>
+
+                    <div class="property-content">
+
+                        <p class="property-type">
+                            Apartment
+                        </p>
+
+                        <h3>
+                            Modern 2 Bedroom Apartment
+                        </h3>
+
+                        <p class="property-location">
+                            📍 Ilorin, Kwara State
+                        </p>
+
+                        <div class="property-bottom">
+
+                            <strong>
+                                ₦850,000
+                                <small>/ year</small>
+                            </strong>
+
+                            <button>
+                                View
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <article class="property-card" data-aos="fade-up" data-aos-delay="200">
+
+                    <div class="property-image image-two">
+
+                        <span class="property-tag">
+                            New
+                        </span>
+
+                    </div>
+
+                    <div class="property-content">
+
+                        <p class="property-type">
+                            Self Contain
+                        </p>
+
+                        <h3>
+                            Comfortable Self Contain
+                        </h3>
+
+                        <p class="property-location">
+                            📍 Tanke, Ilorin
+                        </p>
+
+                        <div class="property-bottom">
+
+                            <strong>
+                                ₦450,000
+                                <small>/ year</small>
+                            </strong>
+
+                            <button>
+                                View
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <article class="property-card" data-aos="fade-up" data-aos-delay="300">
+
+                    <div class="property-image image-three">
+
+                        <span class="property-tag">
+                            Popular
+                        </span>
+
+                    </div>
+
+                    <div class="property-content">
+
+                        <p class="property-type">
+                            Duplex
+                        </p>
+
+                        <h3>
+                            Beautiful Family Duplex
+                        </h3>
+
+                        <p class="property-location">
+                            📍 GRA, Ilorin
+                        </p>
+
+                        <div class="property-bottom">
+
+                            <strong>
+                                ₦2,500,000
+                                <small>/ year</small>
+                            </strong>
+
+                            <button>
+                                View
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= HOW IT WORKS ================= -->
+
+        <section class="how-it-works" id="how-it-works">
+
+            <div class="section-heading centered" data-aos="fade-up">
+
+                <span class="section-label">
+                    SIMPLE PROCESS
+                </span>
+
+                <h2>
+                    Finding your next home is easy
+                </h2>
+
+                <p>
+                    We make the process simple, transparent, and convenient.
+                </p>
+
+            </div>
+
+
+            <div class="steps">
+
+                <div class="step" data-aos="zoom-in" data-aos-delay="100">
+
+                    <div class="step-icon">
+                        🔍
+                    </div>
+
+                    <span>01</span>
+
+                    <h3>
+                        Search
+                    </h3>
+
+                    <p>
+                        Browse available properties based on your preferred
+                        location, type, and budget.
+                    </p>
+
+                </div>
+
+
+                <div class="step" data-aos="zoom-in" data-aos-delay="200">
+
+                    <div class="step-icon">
+                        🏠
+                    </div>
+
+                    <span>02</span>
+
+                    <h3>
+                        Discover
+                    </h3>
+
+                    <p>
+                        Explore property details, images, locations, and
+                        everything you need to know.
+                    </p>
+
+                </div>
+
+
+                <div class="step" data-aos="zoom-in" data-aos-delay="300">
+
+                    <div class="step-icon">
+                        🤝
+                    </div>
+
+                    <span>03</span>
+
+                    <h3>
+                        Connect
+                    </h3>
+
+                    <p>
+                        Connect directly with the landlord or property agent
+                        and take the next step.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= LANDLORD SECTION ================= -->
+
+        <section class="landlord-section" id="list-property">
+
+            <div class="landlord-content" data-aos="fade-right">
+
+                <span class="section-label">
+                    FOR LANDLORDS & AGENTS
+                </span>
+
+                <h2>
+                    Have a property to rent?
+                    <span>Reach the right tenants.</span>
+                </h2>
+
+                <p>
+                    List your available properties and connect with people
+                    actively looking for a place to call home.
+                </p>
+
+                <a href="/register.html" class="primary-btn">
+                    List Your Property →
+                </a>
+
+            </div>
+
+            <div class="landlord-visual" data-aos="fade-left">
+
+                <div class="floating-card">
+                    🏠
+                    <div>
+                        <strong>Your property</strong>
+                        <small>Could be someone's next home.</small>
                     </div>
                 </div>
 
-                <button type="submit" class="submit-btn">
-                    Get Started <i class="fa-solid fa-rocket"></i>
-                </button>
-            </form>
+            </div>
+
+        </section>
+
+
+        <!-- ================= FINAL CTA ================= -->
+
+        <section class="final-cta" data-aos="zoom-out">
+
+            <span class="section-label">
+                YOUR NEXT CHAPTER STARTS HERE
+            </span>
+
+            <h2>
+                Your next home could be
+                <span>just one search away.</span>
+            </h2>
+
+            <p>
+                Start exploring available properties on HomeBridge.
+            </p>
+
+            <a href="#properties" class="primary-btn">
+                Explore Properties →
+            </a>
+
+        </section>
+
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer class="footer">
+
+        <div class="footer-brand">
+
+            <a href="#" class="logo">
+                Home<span>Bridge</span>
+            </a>
+
+            <p>
+                Connecting people to the right place to call home.
+            </p>
+
         </div>
 
-        <p id="responseMsg" class="response-msg"></p>
+        <div class="footer-links">
 
-    </div>
+            <div>
+                <h4>Platform</h4>
+                <a href="#properties">Find a Home</a>
+                <a href="#list-property">List a Property</a>
+                <a href="#how-it-works">How It Works</a>
+            </div>
 
+            <div>
+                <h4>Company</h4>
+                <a href="#">About Us</a>
+                <a href="#">Contact</a>
+                <a href="#">Privacy</a>
+            </div>
+
+        </div>
+
+    </footer>
+
+    <!-- AOS Script Initialization -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        const API_URL = 'https://homebridge-cu1l.onrender.com/api/auth';
-
-        function switchTab(type) {
-            const tabs = document.querySelectorAll('.tab-btn');
-            const loginSec = document.getElementById('loginSection');
-            const regSec = document.getElementById('registerSection');
-            const msg = document.getElementById('responseMsg');
-
-            msg.textContent = '';
-
-            if (type === 'login') {
-                tabs[0].classList.add('active');
-                tabs[1].classList.remove('active');
-                loginSec.classList.add('active');
-                regSec.classList.remove('active');
-            } else {
-                tabs[1].classList.add('active');
-                tabs[0].classList.remove('active');
-                regSec.classList.add('active');
-                loginSec.classList.remove('active');
-            }
-        }
-
-        // Handle Login
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const msg = document.getElementById('responseMsg');
-            msg.style.color = '#2563eb';
-            msg.textContent = 'Authenticating... ⏳';
-
-            try {
-                const res = await fetch(`${API_URL}/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        email: document.getElementById('loginEmail').value,
-                        password: document.getElementById('loginPassword').value
-                    })
-                });
-
-                const data = await res.json();
-                if (res.ok) {
-                    msg.style.color = '#10b981';
-                    msg.textContent = 'Success! Redirecting... 🎉';
-                    if (data.token) localStorage.setItem('userToken', data.token);
-                    setTimeout(() => window.location.href = 'index.html', 1200);
-                } else {
-                    msg.style.color = '#ef4444';
-                    msg.textContent = data.message || 'Invalid email or password.';
-                }
-            } catch (err) {
-                msg.style.color = '#ef4444';
-                msg.textContent = 'Server connection failed.';
-            }
-        });
-
-        // Handle Registration
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const msg = document.getElementById('responseMsg');
-            msg.style.color = '#2563eb';
-            msg.textContent = 'Creating account... 🚀';
-
-            try {
-                const res = await fetch(`${API_URL}/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        fullName: document.getElementById('regFullName').value,
-                        email: document.getElementById('regEmail').value,
-                        password: document.getElementById('regPassword').value,
-                        role: document.getElementById('regRole').value
-                    })
-                });
-
-                const data = await res.json();
-                if (res.ok) {
-                    msg.style.color = '#10b981';
-                    msg.textContent = 'Account created! Redirecting to login... 🎉';
-                    setTimeout(() => switchTab('login'), 1500);
-                } else {
-                    msg.style.color = '#ef4444';
-                    msg.textContent = data.message || 'Registration failed.';
-                }
-            } catch (err) {
-                msg.style.color = '#ef4444';
-                msg.textContent = 'Server connection failed.';
-            }
+        AOS.init({
+            duration: 800,
+            once: true
         });
     </script>
+    <script src="script.js"></script>
+
 </body>
 
 </html>
