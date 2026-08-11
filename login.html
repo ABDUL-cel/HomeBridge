@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HomeBridge | Welcome</title>
-    <!-- FontAwesome for eye-catching icons -->
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -29,7 +29,6 @@
             overflow-x: hidden;
         }
 
-        /* Ambient background glow */
         body::before {
             content: '';
             position: absolute;
@@ -85,7 +84,6 @@
             color: #2563eb;
         }
 
-        /* Tab Switcher */
         .tab-group {
             display: flex;
             background: #f1f5f9;
@@ -126,7 +124,6 @@
             margin-bottom: 1.8rem;
         }
 
-        /* Forms */
         .form-section {
             display: none;
             text-align: left;
@@ -370,7 +367,9 @@
                 if (res.ok) {
                     msg.style.color = '#10b981';
                     msg.textContent = 'Success! Redirecting... 🎉';
-                    if (data.token) localStorage.setItem('userToken', data.token);
+                    if (data.token) {
+                        localStorage.setItem('userToken', data.token);
+                    }
                     setTimeout(() => window.location.href = 'index.html', 1200);
                 } else {
                     msg.style.color = '#ef4444';
@@ -394,7 +393,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        fullName: document.getElementById('regFullName').value,
+                        name: document.getElementById('regFullName').value,
                         email: document.getElementById('regEmail').value,
                         password: document.getElementById('regPassword').value,
                         role: document.getElementById('regRole').value
