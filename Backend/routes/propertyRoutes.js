@@ -7,6 +7,7 @@ const {
   updateProperty,
   deleteProperty,
   getMyListings,
+  promoteProperty,
 } = require('../controllers/propertyController');
 
 const { protect, authorize } = require('../middleware/authMiddleware');
@@ -19,6 +20,14 @@ router.get('/', getProperties);
 router.get('/my-listings', protect, authorize('landlord', 'agent'), getMyListings);
 
 router.get('/:id', getPropertyById);
+
+// Payment route to promote property
+router.put(
+  '/:id/promote',
+  protect,
+  authorize('landlord', 'agent'),
+  promoteProperty
+);
 
 // Protected routes for creating/updating properties
 router.post(
