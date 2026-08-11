@@ -1,15 +1,16 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const connectDB = require('./config/db.js')
+const connectDB = require('./config/db.js');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
 
 // Security Middleware
 app.use(helmet({ contentSecurityPolicy: false })); // Keeps scripts working smooth
-
 
 // Rate Limiting (Prevents brute-force logins)
 const limiter = rateLimit({
@@ -18,18 +19,23 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again later.'
 });
 app.use('/api', limiter);
+
 // Load env vars
 dotenv.config();
 
 // Connect to Database
 connectDB();
 
-
-
 // Body Parser & CORS Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+
+// Automatically create 'public/uploads' directory if it doesn't exist
+const uploadDir = path.join(__dirname, 'public', 'uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 // Serve static files from public directory
 app.use(express.static('public'));
