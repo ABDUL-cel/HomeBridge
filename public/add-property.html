@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeBridge | Add New Property</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .form-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.88rem;
+            color: #94a3b8;
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #2563eb;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: #ffffff;
+            padding: 0.85rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.5);
+        }
+
+        .btn-back {
+            display: inline-block;
+            color: #94a3b8;
+            text-decoration: none;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-back:hover {
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="form-card">
+        <a href="dashboard.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+        <h2><i class="fa-solid fa-house-medical" style="color: #2563eb;"></i> Add New Property</h2>
+
+        <form id="addPropertyForm">
+            <div class="form-group">
+                <label for="title">Property Title</label>
+                <input type="text" id="title" placeholder="e.g. Modern 2 Bedroom Flat" required>
+            </div>
+
+            <div class="form-group">
+                <label for="propertyType">Property Type</label>
+                <select id="propertyType" required>
+                    <option value="Apartment" style="color: #0f172a;">Apartment</option>
+                    <option value="Self Contain" style="color: #0f172a;">Self Contain</option>
+                    <option value="Duplex" style="color: #0f172a;">Duplex</option>
+                    <option value="House" style="color: #0f172a;">House</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="price">Price (₦ per year)</label>
+                <input type="number" id="price" placeholder="e.g. 850000" required>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" placeholder="e.g. Tanke, Ilorin" required>
+            </div>
+
+            <button type="submit" class="btn-submit">Submit Listing</button>
+        </form>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://homebridge-cu1l.onrender.com/api';
+
+        document.getElementById('addPropertyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const token = localStorage.getItem('userToken');
+            if (!token) {
+                alert('Please log in first.');
+                window.location.href = 'auth.html';
+                return;
+            }
+
+            const propertyData = {
+                title: document.getElementById('title').value,
+                propertyType: document.getElementById('propertyType').value,
+                price: document.getElementById('price').value,
+                location: document.getElementById('location').value
+            };
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/properties`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(propertyData)
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    alert('Property listed successfully!');
+                    window.location.href = 'dashboard.html';
+                } else {
+                    alert(data.message || 'Failed to add property.');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error connecting to backend server.');
+            }
+        });
+    </script>
+</body>
+
+</html>
+
