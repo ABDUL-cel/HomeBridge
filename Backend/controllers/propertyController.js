@@ -1,28 +1,22 @@
 const Property = require('../models/Property');
 
-// @desc    Get all properties (with optional filter query)
+// @desc    Get all properties (Featured first)
 // @route   GET /api/properties
 // @access  Public
 exports.getProperties = async (req, res) => {
   try {
-    const { propertyType, area, minPrice, maxPrice, status } = req.query;
-
+    const { area, propertyType, maxPrice, status } = req.query;
     let query = {};
 
-    // Apply filters if provided
-    if (propertyType) query.propertyType = propertyType;
     if (status) query.status = status;
     if (area) query['location.area'] = { $regex: area, $options: 'i' };
+    if (propertyType) query.propertyType = propertyType;
+    if (maxPrice) query.price = { $lte: Number(maxPrice) };
 
-    if (minPrice || maxPrice) {
-      query.price = {};
-      if (minPrice) query.price.$gte = Number(minPrice);
-      if (maxPrice) query.price.$lte = Number(maxPrice);
-    }
-
+    // Sort by isFeatured descending first, then by newest
     const properties = await Property.find(query)
-      .populate('owner', 'fullName phone email isVerified')
-      .sort({ createdAt: -1 });
+      .populate('owner', 'fullName email phone')
+      .sort({ isFeatured: -1, createdAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -34,14 +28,14 @@ exports.getProperties = async (req, res) => {
   }
 };
 
-// @desc    Get single property details
+// @desc    Get single property by ID
 // @route   GET /api/properties/:id
 // @access  Public
 exports.getPropertyById = async (req, res) => {
   try {
     const property = await Property.findById(req.params.id).populate(
       'owner',
-      'fullName phone email isVerified'
+      'fullName email phone'
     );
 
     if (!property) {
@@ -54,54 +48,46 @@ exports.getPropertyById = async (req, res) => {
   }
 };
 
-// @desc    Create new property listing
-// @route   POST /api/properties
-// @access  Private (Landlords and Agents only)
-exports.createProperty = async (req, res) => {
+// @desc    Get logged in landlord's properties
+// @route   GET /api/properties/my-listings
+// @access  Private (Landlord/Agent)
+exports.getMyListings = async (req, res) => {
   try {
-    const { title, description, propertyType, city, area, address, price, pricePeriod, features } = req.body;
-
-    // Process uploaded images
-    let imagePaths = [];
-    if (req.files && req.files.length > 0) {
-      imagePaths = req.files.map((file) => `/uploads/${file.filename}`);
-    }
-
-    // Process features if sent as JSON string or array
-    let parsedFeatures = features;
-    if (typeof features === 'string') {
-      parsedFeatures = JSON.parse(features);
-    }
-
-    const property = await Property.create({
-      title,
-      description,
-      propertyType,
-      location: {
-        city: city || 'Ilorin',
-        area,
-        address,
-      },
-      price,
-      pricePeriod,
-      features: parsedFeatures,
-      images: imagePaths,
-      owner: req.user._id,
-    });
-
-    res.status(201).json({
-      success: true,
-      message: 'Property listed successfully!',
-      data: property,
-    });
+    const properties = await Property.find({ owner: req.user._id }).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, count: properties.length, data: properties });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// @desc    Update property listing
+// @desc    Create new property
+// @route   POST /api/properties
+// @access  Private (Landlord/Agent)
+exports.createProperty = async (req, res) => {
+  try {
+    const imagePaths = req.files ? req.files.map((file) => file.path || `/uploads/${file.filename}`) : [];
+
+    const propertyData = {
+      ...req.body,
+      owner: req.user._id,
+      images: imagePaths,
+    };
+
+    if (typeof req.body.location === 'string') {
+      propertyData.location = JSON.parse(req.body.location);
+    }
+
+    const property = await Property.create(propertyData);
+
+    res.status(201).json({ success: true, data: property });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Update property
 // @route   PUT /api/properties/:id
-// @access  Private (Owner only)
+// @access  Private (Landlord/Agent)
 exports.updateProperty = async (req, res) => {
   try {
     let property = await Property.findById(req.params.id);
@@ -110,15 +96,12 @@ exports.updateProperty = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Property not found' });
     }
 
-    // Check ownership
-    if (property.owner.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ success: false, message: 'Not authorized to edit this property' });
+    if (property.owner.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+      return res.status(401).json({ success: false, message: 'Not authorized to update this property' });
     }
 
-    // Handle new images if uploaded
     if (req.files && req.files.length > 0) {
-      const newImages = req.files.map((file) => `/uploads/${file.filename}`);
-      req.body.images = [...property.images, ...newImages];
+      req.body.images = req.files.map((file) => file.path || `/uploads/${file.filename}`);
     }
 
     property = await Property.findByIdAndUpdate(req.params.id, req.body, {
@@ -126,9 +109,42 @@ exports.updateProperty = async (req, res) => {
       runValidators: true,
     });
 
+    res.status(200).json({ success: true, data: property });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Promote property listing (Featured Status)
+// @route   PUT /api/properties/:id/promote
+// @access  Private (Landlord/Agent)
+exports.promoteProperty = async (req, res) => {
+  try {
+    const { reference } = req.body;
+    let property = await Property.findById(req.params.id);
+
+    if (!property) {
+      return res.status(404).json({ success: false, message: 'Property not found' });
+    }
+
+    if (property.owner.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ success: false, message: 'Not authorized' });
+    }
+
+    const thirtyDays = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+    property = await Property.findByIdAndUpdate(
+      req.params.id,
+      {
+        isFeatured: true,
+        featuredUntil: thirtyDays,
+      },
+      { new: true }
+    );
+
     res.status(200).json({
       success: true,
-      message: 'Property updated successfully',
+      message: 'Property successfully promoted to Featured!',
       data: property,
     });
   } catch (error) {
@@ -136,9 +152,9 @@ exports.updateProperty = async (req, res) => {
   }
 };
 
-// @desc    Delete property listing
+// @desc    Delete property
 // @route   DELETE /api/properties/:id
-// @access  Private (Owner only)
+// @access  Private (Landlord/Agent)
 exports.deleteProperty = async (req, res) => {
   try {
     const property = await Property.findById(req.params.id);
@@ -147,26 +163,13 @@ exports.deleteProperty = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Property not found' });
     }
 
-    // Check ownership
-    if (property.owner.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ success: false, message: 'Not authorized to delete this property' });
+    if (property.owner.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+      return res.status(401).json({ success: false, message: 'Not authorized to delete this property' });
     }
 
     await property.deleteOne();
 
-    res.status(200).json({ success: true, message: 'Property deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
-
-// @desc    Get listings owned by logged-in user
-// @route   GET /api/properties/my-listings
-// @access  Private (Landlord/Agent)
-exports.getMyListings = async (req, res) => {
-  try {
-    const properties = await Property.find({ owner: req.user._id }).sort({ createdAt: -1 });
-    res.status(200).json({ success: true, count: properties.length, data: properties });
+    res.status(200).json({ success: true, data: {} });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
