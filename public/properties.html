@@ -294,6 +294,12 @@
             transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
+            position: relative;
+        }
+
+        .property-card.featured-card {
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            box-shadow: 0 15px 30px rgba(245, 158, 11, 0.12);
         }
 
         .property-card:hover {
@@ -319,6 +325,24 @@
 
         .property-card:hover .card-image-box img {
             transform: scale(1.05);
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #ffffff;
+            padding: 0.35rem 0.75rem;
+            font-size: 0.72rem;
+            border-radius: 8px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
         }
 
         .type-badge {
@@ -516,7 +540,7 @@
                 navContainer.innerHTML = `
                     <div class="user-profile-badge">
                         <i class="fa-solid fa-user-check"></i>
-                        <span>${storedName || 'Tenant'}</span>
+                        <span>${storedName || 'User'}</span>
                     </div>
                     <button onclick="handleLogout()" class="btn-logout">
                         <i class="fa-solid fa-right-from-bracket"></i> Logout
@@ -584,9 +608,10 @@
                     const whatsappUrl = `https://wa.me/234${formattedPhone}?text=${whatsappMsg}`;
 
                     return `
-                        <div class="property-card">
+                        <div class="property-card ${item.isFeatured ? 'featured-card' : ''}">
                             <div class="card-image-box">
                                 <img src="${coverImage}" alt="${item.title}" onerror="this.src='https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=600&q=80'">
+                                ${item.isFeatured ? '<span class="featured-badge"><i class="fa-solid fa-star"></i> Featured</span>' : ''}
                                 <span class="type-badge">${item.propertyType || 'Apartment'}</span>
                             </div>
                             <div class="card-body">
