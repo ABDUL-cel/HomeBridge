@@ -37,13 +37,20 @@ const propertySchema = new mongoose.Schema(
     ],
     images: [
       {
-        type: String, // Stored file path e.g. "/uploads/image-16900000.jpg"
+        type: String, // Stored file path or URL
       },
     ],
     status: {
       type: String,
       enum: ['available', 'rented', 'pending'],
       default: 'available',
+    },
+    isFeatured: {
+      type: Boolean,
+      default: false,
+    },
+    featuredUntil: {
+      type: Date,
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
