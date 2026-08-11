@@ -354,6 +354,15 @@
             }
         }
 
+        // Helper function to handle role-based redirection
+        function redirectUserByRole(role) {
+            if (role === 'landlord') {
+                window.location.href = 'landlord-dashboard.html';
+            } else {
+                window.location.href = 'tenant-dashboard.html';
+            }
+        }
+
         // Handle Login
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -372,15 +381,28 @@
                 });
 
                 const data = await res.json();
+
                 if (res.ok) {
                     msg.style.color = '#10b981';
                     msg.textContent = data.message || 'Login successful! Redirecting... 🎉';
-                    
-                    // Access token directly from data structure returned by loginUser
-                    if (data.data && data.data.token) {
-                        localStorage.setItem('userToken', data.data.token);
+
+                    // Save session details from backend response structure
+                    if (data.data) {
+                        if (data.data.token) {
+                            localStorage.setItem('userToken', data.data.token);
+                        }
+                        if (data.data.role) {
+                            localStorage.setItem('userRole', data.data.role);
+                        }
+                        if (data.data.fullName) {
+                            localStorage.setItem('userName', data.data.fullName);
+                        }
                     }
-                    setTimeout(() => window.location.href = 'index.html', 1200);
+
+                    // Dynamic redirect based on backend role ('landlord' vs 'tenant')
+                    const role = data.data ? data.data.role : 'tenant';
+                    setTimeout(() => redirectUserByRole(role), 1200);
+
                 } else {
                     msg.style.color = '#ef4444';
                     msg.textContent = data.message || 'Invalid email or password.';
@@ -412,15 +434,26 @@
                 });
 
                 const data = await res.json();
+
                 if (res.ok) {
                     msg.style.color = '#10b981';
-                    msg.textContent = data.message || 'Account created! Redirecting to login... 🎉';
-                    
-                    if (data.data && data.data.token) {
-                        localStorage.setItem('userToken', data.data.token);
+                    msg.textContent = data.message || 'Account created! Redirecting... 🎉';
+
+                    if (data.data) {
+                        if (data.data.token) {
+                            localStorage.setItem('userToken', data.data.token);
+                        }
+                        if (data.data.role) {
+                            localStorage.setItem('userRole', data.data.role);
+                        }
+                        if (data.data.fullName) {
+                            localStorage.setItem('userName', data.data.fullName);
+                        }
                     }
-                    
-                    setTimeout(() => switchTab('login'), 1500);
+
+                    const role = data.data ? data.data.role : document.getElementById('regRole').value;
+                    setTimeout(() => redirectUserByRole(role), 1200);
+
                 } else {
                     msg.style.color = '#ef4444';
                     msg.textContent = data.message || 'Registration failed.';
