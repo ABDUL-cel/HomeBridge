@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HomeBridge | Add New Property</title>
+    <title>HomeBridge | Add Property</title>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Font -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
@@ -26,86 +26,170 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 2rem 1rem;
+            padding: 2.5rem 1rem;
         }
 
         .form-card {
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
             padding: 2.5rem;
             width: 100%;
-            max-width: 500px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            max-width: 640px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            transition: color 0.2s ease;
+        }
+
+        .btn-back:hover {
+            color: #38bdf8;
         }
 
         .form-card h2 {
             font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            margin-bottom: 1.75rem;
+            color: #ffffff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 1rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
         }
 
         .form-group {
-            margin-bottom: 1.2rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
         }
 
         .form-group label {
             display: block;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             color: #94a3b8;
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.5rem;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .form-group input,
-        .form-group select {
+        .form-group select,
+        .form-group textarea {
             width: 100%;
-            padding: 0.75rem 1rem;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 0.85rem 1rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 10px;
             color: #ffffff;
             font-size: 0.95rem;
             outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
         }
 
         .form-group input:focus,
-        .form-group select:focus {
-            border-color: #2563eb;
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+            border: 2px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            background: rgba(15, 23, 42, 0.4);
+            cursor: pointer;
+            transition: border-color 0.2s ease;
+        }
+
+        .file-upload-wrapper:hover {
+            border-color: #38bdf8;
+        }
+
+        .file-upload-wrapper input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-icon {
+            font-size: 1.75rem;
+            color: #38bdf8;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-text {
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+
+        .file-count {
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: #38bdf8;
+            font-weight: 600;
         }
 
         .btn-submit {
             width: 100%;
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            background: #2563eb;
             color: #ffffff;
-            padding: 0.85rem;
+            padding: 0.9rem;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             font-weight: 600;
             font-size: 1rem;
             cursor: pointer;
-            margin-top: 1rem;
-            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+            transition: background-color 0.2s ease, transform 0.1s ease;
         }
 
         .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.5);
+            background: #1d4ed8;
         }
 
-        .btn-back {
-            display: inline-block;
-            color: #94a3b8;
-            text-decoration: none;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
+        .btn-submit:active {
+            transform: scale(0.99);
         }
 
-        .btn-back:hover {
-            color: #ffffff;
+        @media (max-width: 640px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: span 1;
+            }
         }
     </style>
 </head>
@@ -113,83 +197,133 @@
 <body>
 
     <div class="form-card">
-        <a href="dashboard.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
-        <h2><i class="fa-solid fa-house-medical" style="color: #2563eb;"></i> Add New Property</h2>
+        <a href="landlord-dashboard.html" class="btn-back">
+            <i class="fa-solid fa-arrow-left"></i> Return to Dashboard
+        </a>
+        <h2>Add Property Listing</h2>
 
         <form id="addPropertyForm">
-            <div class="form-group">
-                <label for="title">Property Title</label>
-                <input type="text" id="title" placeholder="e.g. Modern 2 Bedroom Flat" required>
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label for="title">Property Title</label>
+                    <input type="text" id="title" name="title" placeholder="e.g. Modern 2 Bedroom Apartment" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="propertyType">Type</label>
+                    <select id="propertyType" name="type" required>
+                        <option value="" disabled selected style="color: #0f172a;">Select Type</option>
+                        <option value="Apartment" style="color: #0f172a;">Apartment</option>
+                        <option value="Self Contain" style="color: #0f172a;">Self Contain</option>
+                        <option value="Duplex" style="color: #0f172a;">Duplex</option>
+                        <option value="House" style="color: #0f172a;">House</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="price">Price (NGN)</label>
+                    <input type="number" id="price" name="price" placeholder="e.g. 850000" required>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="location">Area / Address</label>
+                    <input type="text" id="location" name="location" placeholder="e.g. Tanke, Ilorin, Kwara State" required>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="features">Features (Comma Separated)</label>
+                    <input type="text" id="features" name="features" placeholder="e.g. 24/7 Power, Water Supply, Security Gate">
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" placeholder="Provide full details regarding the property..." required></textarea>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Property Images</label>
+                    <div class="file-upload-wrapper">
+                        <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                        <p class="upload-text">Click or drag files here to upload property photos</p>
+                        <div id="fileCount" class="file-count"></div>
+                        <input type="file" id="images" name="images" multiple accept="image/*" required>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="propertyType">Property Type</label>
-                <select id="propertyType" required>
-                    <option value="Apartment" style="color: #0f172a;">Apartment</option>
-                    <option value="Self Contain" style="color: #0f172a;">Self Contain</option>
-                    <option value="Duplex" style="color: #0f172a;">Duplex</option>
-                    <option value="House" style="color: #0f172a;">House</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="price">Price (₦ per year)</label>
-                <input type="number" id="price" placeholder="e.g. 850000" required>
-            </div>
-
-            <div class="form-group">
-                <label for="location">Location</label>
-                <input type="text" id="location" placeholder="e.g. Tanke, Ilorin" required>
-            </div>
-
-            <button type="submit" class="btn-submit">Submit Listing</button>
+            <button type="submit" id="submitBtn" class="btn-submit">Submit Property</button>
         </form>
     </div>
 
     <script>
         const API_BASE_URL = 'https://homebridge-cu1l.onrender.com/api';
 
+        const imageInput = document.getElementById('images');
+        const fileCountDisplay = document.getElementById('fileCount');
+
+        imageInput.addEventListener('change', () => {
+            const count = imageInput.files.length;
+            if (count > 0) {
+                fileCountDisplay.textContent = `${count} file(s) selected`;
+            } else {
+                fileCountDisplay.textContent = '';
+            }
+        });
+
         document.getElementById('addPropertyForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
+            const submitBtn = document.getElementById('submitBtn');
             const token = localStorage.getItem('userToken');
+
             if (!token) {
-                alert('Please log in first.');
+                alert('Authentication required. Redirecting to login.');
                 window.location.href = 'auth.html';
                 return;
             }
 
-            const propertyData = {
-                title: document.getElementById('title').value,
-                propertyType: document.getElementById('propertyType').value,
-                price: document.getElementById('price').value,
-                location: document.getElementById('location').value
-            };
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+
+            const formData = new FormData();
+            formData.append('title', document.getElementById('title').value);
+            formData.append('type', document.getElementById('propertyType').value);
+            formData.append('price', document.getElementById('price').value);
+            formData.append('location', document.getElementById('location').value);
+            formData.append('features', document.getElementById('features').value);
+            formData.append('description', document.getElementById('description').value);
+
+            const files = imageInput.files;
+            for (let i = 0; i < files.length; i++) {
+                formData.append('images', files[i]);
+            }
 
             try {
-                const res = await fetch(`${API_BASE_URL}/properties`, {
+                const response = await fetch(`${API_BASE_URL}/properties`, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify(propertyData)
+                    body: formData
                 });
 
-                const data = await res.json();
-                if (res.ok) {
-                    alert('Property listed successfully!');
-                    window.location.href = 'dashboard.html';
+                const data = await response.json();
+
+                if (response.ok) {
+                    window.location.href = 'landlord-dashboard.html';
                 } else {
-                    alert(data.message || 'Failed to add property.');
+                    alert(data.message || 'Property creation failed.');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit Property';
                 }
-            } catch (err) {
-                console.error(err);
-                alert('Error connecting to backend server.');
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                alert('Server connection failure. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Property';
             }
         });
     </script>
 </body>
 
 </html>
-
