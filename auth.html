@@ -4,151 +4,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HomeBridge | Welcome</title>
-    <!-- FontAwesome Icons -->
+    <meta name="description"
+        content="HomeBridge connects tenants with landlords and property agents to find the right place to call home.">
+
+    <title>HomeBridge | Find Your Place</title>
+
+    <!-- FontAwesome for eye-catching icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- AOS Animation Library -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Plus Jakarta Sans', sans-serif;
+            scroll-behavior: smooth;
         }
 
         body {
-            min-height: 100vh;
+            background-color: #0f172a;
+            color: #f8fafc;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient background glow effects */
+        .glow-1 {
+            position: absolute;
+            width: 450px;
+            height: 450px;
+            background: rgba(37, 99, 235, 0.18);
+            filter: blur(120px);
+            border-radius: 50%;
+            top: 5%;
+            left: -100px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .glow-2 {
+            position: absolute;
+            width: 450px;
+            height: 450px;
+            background: rgba(16, 185, 129, 0.15);
+            filter: blur(120px);
+            border-radius: 50%;
+            top: 40%;
+            right: -100px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
             display: flex;
             align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-            padding: 2rem 1rem;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: absolute;
-            width: 350px;
-            height: 350px;
-            background: rgba(37, 99, 235, 0.25);
-            filter: blur(100px);
-            border-radius: 50%;
-            top: 10%;
-            left: 20%;
-            z-index: 0;
-        }
-
-        body::after {
-            content: '';
-            position: absolute;
-            width: 350px;
-            height: 350px;
-            background: rgba(16, 185, 129, 0.2);
-            filter: blur(100px);
-            border-radius: 50%;
-            bottom: 10%;
-            right: 20%;
-            z-index: 0;
-        }
-
-        .auth-card {
-            position: relative;
-            z-index: 10;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            width: 100%;
-            max-width: 460px;
-            padding: 2.5rem 2.2rem;
-            border-radius: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            text-align: center;
+            justify-content: space-between;
+            padding: 1.2rem 5%;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
         }
 
         .brand-logo {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #0f172a;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #ffffff;
             text-decoration: none;
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1.2rem;
+            gap: 0.6rem;
         }
 
         .brand-logo span {
             color: #2563eb;
         }
 
-        .tab-group {
+        .nav-links {
             display: flex;
-            background: #f1f5f9;
-            padding: 0.35rem;
-            border-radius: 14px;
-            margin-bottom: 1.5rem;
+            gap: 2rem;
+            list-style: none;
         }
 
-        .tab-btn {
-            flex: 1;
-            padding: 0.75rem;
-            border: none;
-            background: transparent;
+        .nav-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #2563eb;
+        }
+
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-secondary {
+            color: #ffffff;
+            text-decoration: none;
             font-weight: 600;
             font-size: 0.95rem;
-            color: #64748b;
+            padding: 0.65rem 1.25rem;
             border-radius: 10px;
-            cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        .tab-btn.active {
-            background: #ffffff;
+        .btn-secondary:hover {
             color: #2563eb;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
-        .auth-header h2 {
-            font-size: 1.4rem;
-            color: #0f172a;
-            font-weight: 700;
-            margin-bottom: 0.3rem;
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 0.65rem 1.35rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .auth-header p {
-            color: #64748b;
-            font-size: 0.88rem;
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+        }
+
+        /* ================= HERO SECTION ================= */
+
+        .hero-section {
+            position: relative;
+            z-index: 10;
+            padding: 9rem 5% 5rem;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 3rem;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(37, 99, 235, 0.12);
+            border: 1px solid rgba(37, 99, 235, 0.3);
+            color: #60a5fa;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
             margin-bottom: 1.5rem;
         }
 
-        .form-section {
-            display: none;
-            text-align: left;
+        .hero-title {
+            font-size: 3.2rem;
+            font-weight: 800;
+            line-height: 1.2;
+            color: #ffffff;
+            margin-bottom: 1.2rem;
         }
 
-        .form-section.active {
-            display: block;
-            animation: fadeIn 0.4s ease;
+        .hero-title span {
+            background: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+        .hero-description {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            max-width: 540px;
         }
 
-        .input-box {
-            margin-bottom: 1rem;
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
         }
 
-        .input-box label {
+        .btn-outline {
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.03);
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline:hover {
+            border-color: #2563eb;
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        /* Glassmorphism Search Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 2.2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .search-card-header h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.3rem;
+        }
+
+        .search-card-header p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
             display: block;
             font-size: 0.82rem;
             font-weight: 600;
-            color: #334155;
-            margin-bottom: 0.3rem;
+            color: #cbd5e1;
+            margin-bottom: 0.4rem;
         }
 
         .input-wrapper {
@@ -160,277 +265,618 @@
         .input-wrapper i {
             position: absolute;
             left: 1rem;
-            color: #94a3b8;
+            color: #64748b;
             font-size: 0.95rem;
             transition: color 0.3s ease;
         }
 
-        .input-wrapper input, 
+        .input-wrapper input,
         .input-wrapper select {
             width: 100%;
-            padding: 0.75rem 1rem 0.75rem 2.8rem;
-            border: 1.5px solid #e2e8f0;
+            padding: 0.8rem 1rem 0.8rem 2.8rem;
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             font-size: 0.92rem;
             outline: none;
-            background: #f8fafc;
-            color: #0f172a;
+            background: rgba(15, 23, 42, 0.6);
+            color: #ffffff;
             transition: all 0.3s ease;
         }
 
-        .input-wrapper input:focus, 
+        .input-wrapper input:focus,
         .input-wrapper select:focus {
             border-color: #2563eb;
-            background: #ffffff;
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
         }
 
         .input-wrapper input:focus + i,
         .input-wrapper select:focus + i {
-            color: #2563eb;
+            color: #60a5fa;
         }
 
-        .submit-btn {
-            width: 100%;
-            padding: 0.85rem;
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        .input-wrapper select option {
+            background-color: #1e293b;
             color: #ffffff;
-            border: none;
-            border-radius: 12px;
-            font-size: 0.98rem;
+        }
+
+        /* ================= STATS SECTION ================= */
+
+        .stats-section {
+            position: relative;
+            z-index: 10;
+            padding: 3rem 5%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-card h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #60a5fa;
+            margin-bottom: 0.2rem;
+        }
+
+        .stat-card p {
+            color: #94a3b8;
+            font-size: 0.88rem;
+        }
+
+        /* ================= PROPERTIES SECTION ================= */
+
+        .section-padding {
+            position: relative;
+            z-index: 10;
+            padding: 6rem 5%;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 3rem;
+        }
+
+        .section-tag {
+            color: #60a5fa;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .view-link {
+            color: #60a5fa;
+            text-decoration: none;
             font-weight: 600;
-            cursor: pointer;
-            margin-top: 0.8rem;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 0.6rem;
-            box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4);
+            gap: 0.5rem;
+            transition: gap 0.3s ease;
+        }
+
+        .view-link:hover {
+            gap: 0.8rem;
+        }
+
+        .property-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .property-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            overflow: hidden;
             transition: all 0.3s ease;
         }
 
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px -5px rgba(37, 99, 235, 0.5);
+        .property-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(37, 99, 235, 0.4);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
         }
 
-        .response-msg {
-            margin-top: 1rem;
-            font-size: 0.88rem;
+        .property-img {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            padding: 1rem;
+        }
+
+        .img-1 { background-image: linear-gradient(to bottom, rgba(15,23,42,0.2), rgba(15,23,42,0.8)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=600&q=80'); }
+        .img-2 { background-image: linear-gradient(to bottom, rgba(15,23,42,0.2), rgba(15,23,42,0.8)), url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80'); }
+        .img-3 { background-image: linear-gradient(to bottom, rgba(15,23,42,0.2), rgba(15,23,42,0.8)), url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80'); }
+
+        .property-tag {
+            background: rgba(37, 99, 235, 0.9);
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .property-body {
+            padding: 1.5rem;
+        }
+
+        .property-type {
+            color: #60a5fa;
+            font-size: 0.8rem;
             font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+        }
+
+        .property-body h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .property-location {
+            color: #94a3b8;
+            font-size: 0.88rem;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .property-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .price {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .price small {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        /* ================= PROCESS SECTION ================= */
+
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .process-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .process-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(37, 99, 235, 0.15);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #60a5fa;
+            font-size: 1.2rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .process-card h3 {
+            font-size: 1.2rem;
+            color: #ffffff;
+            margin-bottom: 0.6rem;
+        }
+
+        .process-card p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* ================= FOOTER ================= */
+
+        .footer {
+            background: rgba(15, 23, 42, 0.95);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 4rem 5% 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr repeat(2, 1fr);
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-top: 0.8rem;
+            max-width: 320px;
+        }
+
+        .footer-col h4 {
+            color: #ffffff;
+            font-size: 1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .footer-col a {
+            display: block;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 0.6rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-col a:hover {
+            color: #60a5fa;
+        }
+
+        .footer-bottom {
             text-align: center;
-            min-height: 20px;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 900px) {
+            .hero-section {
+                grid-template-columns: 1fr;
+                padding-top: 7rem;
+            }
+            .nav-links {
+                display: none;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="auth-card">
+    <div class="glow-1"></div>
+    <div class="glow-2"></div>
 
-        <a href="index.html" class="brand-logo">
+    <!-- ================= NAVBAR ================= -->
+
+    <header class="navbar">
+        <a href="#" class="brand-logo">
             <i class="fa-solid fa-house-chimney-window" style="color: #2563eb;"></i>
             Home<span>Bridge</span>
         </a>
 
-        <!-- Tab Controls -->
-        <div class="tab-group">
-            <button class="tab-btn active" onclick="switchTab('login')">Log In</button>
-            <button class="tab-btn" onclick="switchTab('register')">Sign Up</button>
-        </div>
+        <nav class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#properties">Find a Home</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#list-property">List Property</a>
+        </nav>
 
-        <!-- LOG IN FORM -->
-        <div id="loginSection" class="form-section active">
-            <div class="auth-header">
-                <h2>Welcome back! 👋</h2>
-                <p>Enter your details to access your account.</p>
+        <div class="nav-buttons">
+            <a href="auth.html" class="btn-secondary">Log in</a>
+            <a href="auth.html" class="btn-primary">
+                Get Started <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+    </header>
+
+
+    <!-- ================= HERO SECTION ================= -->
+
+    <main id="home">
+
+        <section class="hero-section">
+
+            <div class="hero-content" data-aos="fade-right">
+
+                <div class="hero-badge">
+                    <i class="fa-solid fa-sparkles"></i> Find a place you'll love
+                </div>
+
+                <h1 class="hero-title">
+                    Your HomeBridge awaits: <span>connecting you to properties.</span>
+                </h1>
+
+                <p class="hero-description">
+                    HomeBridge makes it simple to discover verified homes, connect directly with landlords or agents, and secure a place that fits your lifestyle.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="#properties" class="btn-primary">
+                        Find a Home <i class="fa-solid fa-magnifying-glass"></i>
+                    </a>
+                    <a href="auth.html" class="btn-outline">
+                        List Your Property
+                    </a>
+                </div>
+
             </div>
 
-            <form id="loginForm">
-                <div class="input-box">
-                    <label>Email Address</label>
-                    <div class="input-wrapper">
-                        <input type="email" id="loginEmail" placeholder="name@example.com" required>
-                        <i class="fa-regular fa-envelope"></i>
-                    </div>
+            <!-- Glassmorphism Search Card -->
+            <div class="glass-card" data-aos="fade-left">
+
+                <div class="search-card-header">
+                    <h3>Find your next home ✨</h3>
+                    <p>Search available properties near you</p>
                 </div>
 
-                <div class="input-box">
-                    <label>Password</label>
-                    <div class="input-wrapper">
-                        <input type="password" id="loginPassword" placeholder="••••••••" required>
-                        <i class="fa-solid fa-lock"></i>
+                <form class="search-form">
+
+                    <div class="form-group">
+                        <label>Location</label>
+                        <div class="input-wrapper">
+                            <input type="text" placeholder="e.g. Ilorin, Kwara State">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
                     </div>
-                </div>
 
-                <button type="submit" class="submit-btn">
-                    Log In <i class="fa-solid fa-arrow-right"></i>
-                </button>
-            </form>
-        </div>
+                    <div class="form-group">
+                        <label>Property Type</label>
+                        <div class="input-wrapper">
+                            <select>
+                                <option>Any Property Type</option>
+                                <option>Apartment / Flat</option>
+                                <option>Duplex</option>
+                                <option>Self Contain</option>
+                                <option>Single Room</option>
+                            </select>
+                            <i class="fa-solid fa-building"></i>
+                        </div>
+                    </div>
 
-        <!-- REGISTER FORM -->
-        <div id="registerSection" class="form-section">
-            <div class="auth-header">
-                <h2>Create an account ✨</h2>
-                <p>Join HomeBridge to start exploring or listing homes.</p>
+                    <div class="form-group">
+                        <label>Max Budget</label>
+                        <div class="input-wrapper">
+                            <select>
+                                <option>Any Budget</option>
+                                <option>Under ₦500,000</option>
+                                <option>₦500,000 - ₦1,000,000</option>
+                                <option>Above ₦1,000,000</option>
+                            </select>
+                            <i class="fa-solid fa-naira-sign"></i>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; margin-top: 0.5rem;">
+                        Search Properties <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+
+                </form>
+
             </div>
 
-            <form id="registerForm">
-                <div class="input-box">
-                    <label>Full Name</label>
-                    <div class="input-wrapper">
-                        <input type="text" id="regFullName" placeholder="Abdulazeez Khalid" required>
-                        <i class="fa-regular fa-user"></i>
+        </section>
+
+
+        <!-- ================= STATS ================= -->
+
+        <section class="stats-section" data-aos="fade-up">
+
+            <div class="stat-card">
+                <h2>1,000+</h2>
+                <p>Available Listings</p>
+            </div>
+
+            <div class="stat-card">
+                <h2>500+</h2>
+                <p>Verified Agents</p>
+            </div>
+
+            <div class="stat-card">
+                <h2>10+</h2>
+                <p>Cities Covered</p>
+            </div>
+
+            <div class="stat-card">
+                <h2>24/7</h2>
+                <p>Dedicated Support</p>
+            </div>
+
+        </section>
+
+
+        <!-- ================= FEATURED PROPERTIES ================= -->
+
+        <section class="section-padding" id="properties">
+
+            <div class="section-header" data-aos="fade-up">
+                <div>
+                    <span class="section-tag">EXPLORE HOMES</span>
+                    <h2 class="section-title">Featured Listings</h2>
+                </div>
+                <a href="#" class="view-link">
+                    View All Properties <i class="fa-solid fa-arrow-right-long"></i>
+                </a>
+            </div>
+
+            <div class="property-grid">
+
+                <article class="property-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="property-img img-1">
+                        <span class="property-tag">Featured</span>
                     </div>
+                    <div class="property-body">
+                        <p class="property-type">Apartment</p>
+                        <h3>Modern 2 Bedroom Flat</h3>
+                        <p class="property-location">
+                            <i class="fa-solid fa-location-dot" style="color: #60a5fa;"></i> Ilorin, Kwara State
+                        </p>
+                        <div class="property-footer">
+                            <div class="price">₦850,000 <small>/ year</small></div>
+                            <a href="auth.html" class="btn-primary" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">View</a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="property-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="property-img img-2">
+                        <span class="property-tag">New</span>
+                    </div>
+                    <div class="property-body">
+                        <p class="property-type">Self Contain</p>
+                        <h3>Comfortable Self Contain</h3>
+                        <p class="property-location">
+                            <i class="fa-solid fa-location-dot" style="color: #60a5fa;"></i> Tanke, Ilorin
+                        </p>
+                        <div class="property-footer">
+                            <div class="price">₦450,000 <small>/ year</small></div>
+                            <a href="auth.html" class="btn-primary" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">View</a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="property-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="property-img img-3">
+                        <span class="property-tag">Popular</span>
+                    </div>
+                    <div class="property-body">
+                        <p class="property-type">Duplex</p>
+                        <h3>Executive Family Duplex</h3>
+                        <p class="property-location">
+                            <i class="fa-solid fa-location-dot" style="color: #60a5fa;"></i> GRA, Ilorin
+                        </p>
+                        <div class="property-footer">
+                            <div class="price">₦2,500,000 <small>/ year</small></div>
+                            <a href="auth.html" class="btn-primary" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">View</a>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= HOW IT WORKS ================= -->
+
+        <section class="section-padding" id="how-it-works">
+
+            <div class="section-header" style="justify-content: center; text-align: center;" data-aos="fade-up">
+                <div>
+                    <span class="section-tag">SIMPLE PROCESS</span>
+                    <h2 class="section-title">How HomeBridge Works</h2>
+                </div>
+            </div>
+
+            <div class="process-grid">
+
+                <div class="process-card" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="process-icon">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <h3>1. Search Homes</h3>
+                    <p>Browse through available properties filtered by location, type, and price range.</p>
                 </div>
 
-                <div class="input-box">
-                    <label>Email Address</label>
-                    <div class="input-wrapper">
-                        <input type="email" id="regEmail" placeholder="name@example.com" required>
-                        <i class="fa-regular fa-envelope"></i>
+                <div class="process-card" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="process-icon">
+                        <i class="fa-solid fa-eye"></i>
                     </div>
+                    <h3>2. Discover Details</h3>
+                    <p>Inspect property photos, verified specifications, and neighborhood details easily.</p>
                 </div>
 
-                <div class="input-box">
-                    <label>Phone Number</label>
-                    <div class="input-wrapper">
-                        <input type="tel" id="regPhone" placeholder="08012345678" required>
-                        <i class="fa-solid fa-phone"></i>
+                <div class="process-card" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="process-icon">
+                        <i class="fa-solid fa-handshake"></i>
                     </div>
+                    <h3>3. Connect & Move</h3>
+                    <p>Contact landlords directly and proceed smoothly to secure your next home.</p>
                 </div>
 
-                <div class="input-box">
-                    <label>Password</label>
-                    <div class="input-wrapper">
-                        <input type="password" id="regPassword" placeholder="••••••••" required>
-                        <i class="fa-solid fa-lock"></i>
-                    </div>
-                </div>
+            </div>
 
-                <div class="input-box">
-                    <label>I am a...</label>
-                    <div class="input-wrapper">
-                        <select id="regRole">
-                            <option value="tenant">🏠 Tenant / House Finder</option>
-                            <option value="landlord">🔑 Landlord / Agent</option>
-                        </select>
-                        <i class="fa-solid fa-user-tag"></i>
-                    </div>
-                </div>
+        </section>
 
-                <button type="submit" class="submit-btn">
-                    Get Started <i class="fa-solid fa-rocket"></i>
-                </button>
-            </form>
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer class="footer">
+
+        <div class="footer-grid">
+
+            <div class="footer-brand">
+                <a href="#" class="brand-logo">
+                    <i class="fa-solid fa-house-chimney-window" style="color: #2563eb;"></i>
+                    Home<span>Bridge</span>
+                </a>
+                <p>Connecting people directly to properties they love through transparent listings and easy navigation.</p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Platform</h4>
+                <a href="#properties">Find a Home</a>
+                <a href="auth.html">List a Property</a>
+                <a href="#how-it-works">How It Works</a>
+            </div>
+
+            <div class="footer-col">
+                <h4>Account</h4>
+                <a href="auth.html">Log In</a>
+                <a href="auth.html">Create Account</a>
+            </div>
+
         </div>
 
-        <p id="responseMsg" class="response-msg"></p>
+        <div class="footer-bottom">
+            <p>&copy; 2026 HomeBridge. All rights reserved.</p>
+        </div>
 
-    </div>
+    </footer>
 
+    <!-- AOS Script Initialization -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        const API_URL = 'https://homebridge-cu1l.onrender.com/api/auth';
-
-        function switchTab(type) {
-            const tabs = document.querySelectorAll('.tab-btn');
-            const loginSec = document.getElementById('loginSection');
-            const regSec = document.getElementById('registerSection');
-            const msg = document.getElementById('responseMsg');
-
-            msg.textContent = '';
-
-            if (type === 'login') {
-                tabs[0].classList.add('active');
-                tabs[1].classList.remove('active');
-                loginSec.classList.add('active');
-                regSec.classList.remove('active');
-            } else {
-                tabs[1].classList.add('active');
-                tabs[0].classList.remove('active');
-                regSec.classList.add('active');
-                loginSec.classList.remove('active');
-            }
-        }
-
-        // Handle Login
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const msg = document.getElementById('responseMsg');
-            msg.style.color = '#2563eb';
-            msg.textContent = 'Authenticating... ⏳';
-
-            try {
-                const res = await fetch(`${API_URL}/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        email: document.getElementById('loginEmail').value,
-                        password: document.getElementById('loginPassword').value
-                    })
-                });
-
-                const data = await res.json();
-                if (res.ok) {
-                    msg.style.color = '#10b981';
-                    msg.textContent = data.message || 'Login successful! Redirecting... 🎉';
-                    
-                    // Access token directly from data structure returned by loginUser
-                    if (data.data && data.data.token) {
-                        localStorage.setItem('userToken', data.data.token);
-                    }
-                    setTimeout(() => window.location.href = 'index.html', 1200);
-                } else {
-                    msg.style.color = '#ef4444';
-                    msg.textContent = data.message || 'Invalid email or password.';
-                }
-            } catch (err) {
-                msg.style.color = '#ef4444';
-                msg.textContent = 'Server connection failed.';
-            }
-        });
-
-        // Handle Registration
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const msg = document.getElementById('responseMsg');
-            msg.style.color = '#2563eb';
-            msg.textContent = 'Creating account... 🚀';
-
-            try {
-                const res = await fetch(`${API_URL}/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        fullName: document.getElementById('regFullName').value,
-                        email: document.getElementById('regEmail').value,
-                        phone: document.getElementById('regPhone').value,
-                        password: document.getElementById('regPassword').value,
-                        role: document.getElementById('regRole').value
-                    })
-                });
-
-                const data = await res.json();
-                if (res.ok) {
-                    msg.style.color = '#10b981';
-                    msg.textContent = data.message || 'Account created! Redirecting to login... 🎉';
-                    
-                    if (data.data && data.data.token) {
-                        localStorage.setItem('userToken', data.data.token);
-                    }
-                    
-                    setTimeout(() => switchTab('login'), 1500);
-                } else {
-                    msg.style.color = '#ef4444';
-                    msg.textContent = data.message || 'Registration failed.';
-                }
-            } catch (err) {
-                msg.style.color = '#ef4444';
-                msg.textContent = 'Server connection failed.';
-            }
+        AOS.init({
+            duration: 800,
+            once: true
         });
     </script>
+
 </body>
 
 </html>
