@@ -1,0 +1,7 @@
+{
+ "name": "homebridge-backend",
+ "version": "1.0.0",
+ "description": "Backend for HomeBridge project",
+ "main": "server.js",
+ "scripts": {
+ 
