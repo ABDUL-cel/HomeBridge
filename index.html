@@ -10,6 +10,8 @@
 
     <title>HomeBridge | Find Your Place</title>
 
+    <!-- AOS Animation Library for Scroll Effects -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -31,8 +33,8 @@
         </nav>
 
         <div class="nav-buttons">
-            <a href="#" class="login-btn">Log in</a>
-            <a href="#" class="signup-btn">Get Started</a>
+            <a href="/login.html" class="login-btn">Log in</a>
+            <a href="/register.html" class="signup-btn">Get Started</a>
         </div>
 
         <button class="menu-btn" id="menuBtn">
@@ -48,15 +50,15 @@
 
         <section class="hero" id="home">
 
-            <div class="hero-content">
+            <div class="hero-content" data-aos="fade-right">
 
                 <span class="hero-badge">
                     🏠 Find a place you'll love
                 </span>
 
                 <h1>
-                    Your next home is
-                    <span>closer than you think.</span>
+                    Your HomeBridge awaits:
+                    <span>connecting you to the properties you love.</span>
                 </h1>
 
                 <p>
@@ -80,7 +82,7 @@
             </div>
 
 
-            <div class="hero-card">
+            <div class="hero-card" data-aos="fade-left">
 
                 <div class="search-header">
                     <h3>Find your next home</h3>
@@ -130,7 +132,7 @@
 
         <!-- ================= STATS ================= -->
 
-        <section class="stats">
+        <section class="stats" data-aos="fade-up">
 
             <div class="stat-item">
                 <h2>1,000+</h2>
@@ -159,7 +161,7 @@
 
         <section class="properties-section" id="properties">
 
-            <div class="section-heading">
+            <div class="section-heading" data-aos="fade-up">
 
                 <div>
                     <span class="section-label">
@@ -180,7 +182,7 @@
 
             <div class="property-grid">
 
-                <article class="property-card">
+                <article class="property-card" data-aos="fade-up" data-aos-delay="100">
 
                     <div class="property-image image-one">
 
@@ -222,7 +224,7 @@
                 </article>
 
 
-                <article class="property-card">
+                <article class="property-card" data-aos="fade-up" data-aos-delay="200">
 
                     <div class="property-image image-two">
 
@@ -264,7 +266,7 @@
                 </article>
 
 
-                <article class="property-card">
+                <article class="property-card" data-aos="fade-up" data-aos-delay="300">
 
                     <div class="property-image image-three">
 
@@ -314,7 +316,7 @@
 
         <section class="how-it-works" id="how-it-works">
 
-            <div class="section-heading centered">
+            <div class="section-heading centered" data-aos="fade-up">
 
                 <span class="section-label">
                     SIMPLE PROCESS
@@ -333,7 +335,7 @@
 
             <div class="steps">
 
-                <div class="step">
+                <div class="step" data-aos="zoom-in" data-aos-delay="100">
 
                     <div class="step-icon">
                         🔍
@@ -353,7 +355,7 @@
                 </div>
 
 
-                <div class="step">
+                <div class="step" data-aos="zoom-in" data-aos-delay="200">
 
                     <div class="step-icon">
                         🏠
@@ -373,7 +375,7 @@
                 </div>
 
 
-                <div class="step">
+                <div class="step" data-aos="zoom-in" data-aos-delay="300">
 
                     <div class="step-icon">
                         🤝
@@ -401,7 +403,7 @@
 
         <section class="landlord-section" id="list-property">
 
-            <div class="landlord-content">
+            <div class="landlord-content" data-aos="fade-right">
 
                 <span class="section-label">
                     FOR LANDLORDS & AGENTS
@@ -417,13 +419,13 @@
                     actively looking for a place to call home.
                 </p>
 
-                <a href="#" class="primary-btn">
+                <a href="/register.html" class="primary-btn">
                     List Your Property →
                 </a>
 
             </div>
 
-            <div class="landlord-visual">
+            <div class="landlord-visual" data-aos="fade-left">
 
                 <div class="floating-card">
                     🏠
@@ -440,7 +442,7 @@
 
         <!-- ================= FINAL CTA ================= -->
 
-        <section class="final-cta">
+        <section class="final-cta" data-aos="zoom-out">
 
             <span class="section-label">
                 YOUR NEXT CHAPTER STARTS HERE
@@ -484,9 +486,9 @@
 
             <div>
                 <h4>Platform</h4>
-                <a href="#">Find a Home</a>
-                <a href="#">List a Property</a>
-                <a href="#">How It Works</a>
+                <a href="#properties">Find a Home</a>
+                <a href="#list-property">List a Property</a>
+                <a href="#how-it-works">How It Works</a>
             </div>
 
             <div>
@@ -500,9 +502,16 @@
 
     </footer>
 
-
+    <!-- AOS Script Initialization -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+    </script>
     <script src="script.js"></script>
 
 </body>
 
-                              </html>
+</html>
