@@ -1,132 +1,620 @@
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Find a Home - HomeBridge</title>
-  <style>
-    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
-    body { background-color: #f8fafc; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; }
-    header { background: #ffffff; padding: 16px 32px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
-    .logo { font-size: 22px; font-weight: 700; color: #0284c7; text-decoration: none; }
-    .logo span { color: #0f172a; }
-    
-    .container { max-width: 1100px; width: 90%; margin: 30px auto; flex: 1; }
-    
-    /* Search Bar Section */
-    .filter-card { background: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 30px; }
-    .filter-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; align-items: end; }
-    .form-group { display: flex; flex-direction: column; }
-    label { font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 4px; }
-    input, select { padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; background: #fff; }
-    input:focus, select:focus { border-color: #0284c7; }
-    .btn-search { background: #0284c7; color: #ffffff; border: none; padding: 10px; font-weight: 600; border-radius: 6px; cursor: pointer; }
-    .btn-search:hover { background: #0369a1; }
-    
-    /* Grid Layout */
-    .property-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-  </style>
-</head>
-<body>
-  <header>
-    <a href="/index.html" class="logo">Home<span>Bridge</span></a>
-    <div class="nav-buttons">
-      <a href="/login.html" style="color: #0284c7; text-decoration: none; font-weight: 600; margin-right: 12px;">Log in</a>
-      <a href="/register.html" style="background: #0284c7; color: #fff; padding: 8px 14px; border-radius: 6px; text-decoration: none; font-weight: 600;">Get Started</a>
-    </div>
-  </header>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeBridge | Find Your Next Home</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <main class="container">
-    <h2 style="margin-bottom: 16px; color: #0f172a;">Available Properties</h2>
-
-    <!-- Search & Filter Controls -->
-    <div class="filter-card">
-      <form id="filterForm" class="filter-form">
-        <div class="form-group">
-          <label for="area">Area / Neighborhood</label>
-          <input type="text" id="area" placeholder="e.g. Tanke, GRA">
-        </div>
-        <div class="form-group">
-          <label for="propertyType">Property Type</label>
-          <select id="propertyType">
-            <option value="">All Types</option>
-            <option value="Apartment">Apartment</option>
-            <option value="Duplex">Duplex</option>
-            <option value="Self Contain">Self Contain</option>
-            <option value="Single Room">Single Room</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="maxPrice">Max Price (₦)</label>
-          <input type="number" id="maxPrice" placeholder="e.g. 500000">
-        </div>
-        <button type="submit" class="btn-search">Filter Results</button>
-      </form>
-    </div>
-
-    <!-- Live Property Grid -->
-    <div class="property-grid" id="propertyGrid">
-      <p style="text-align: center; grid-column: 1/-1; color: #64748b;">Loading available homes...</p>
-    </div>
-  </main>
-
-  <script src="/js/auth.js"></script>
-  <script src="/js/fetchProperties.js"></script>
-  <script>
-    // Handle Live Dynamic Filtering
-    const filterForm = document.getElementById('filterForm');
-    if (filterForm) {
-      filterForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const area = document.getElementById('area').value;
-        const propertyType = document.getElementById('propertyType').value;
-        const maxPrice = document.getElementById('maxPrice').value;
-
-        let queryString = '/api/properties?status=available';
-        if (area) queryString += `&area=${encodeURIComponent(area)}`;
-        if (propertyType) queryString += `&propertyType=${encodeURIComponent(propertyType)}`;
-        if (maxPrice) queryString += `&maxPrice=${maxPrice}`;
-
-        loadFilteredProperties(queryString);
-      });
-    }
-
-    async function loadFilteredProperties(url) {
-      const propertyGrid = document.getElementById('propertyGrid');
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-
-        if (!data.success || data.data.length === 0) {
-          propertyGrid.innerHTML = `<p style="text-align:center; grid-column: 1/-1; color: #64748b;">No matching homes found.</p>`;
-          return;
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
-        propertyGrid.innerHTML = data.data.map((item) => {
-          const coverImage = item.images && item.images.length > 0 ? item.images[0] : '/images/default-house.jpg';
-          const ownerPhone = item.owner ? item.owner.phone : '';
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+        }
 
-          return `
-            <div style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #fff;">
-              <div style="position: relative; height: 180px;">
-                <img src="${coverImage}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover;">
-                <span style="position: absolute; top: 10px; right: 10px; background: #0284c7; color: #fff; padding: 4px 8px; font-size: 11px; border-radius: 4px; text-transform: uppercase; font-weight: 600;">${item.propertyType}</span>
-              </div>
-              <div style="padding: 16px;">
-                <h3 style="margin: 0 0 6px 0; font-size: 17px; color: #0f172a;">${item.title}</h3>
-                <p style="color: #64748b; font-size: 13px; margin-bottom: 12px;">📍 ${item.location.area}, ${item.location.city}</p>
-                <div style="margin-bottom: 12px;">
-                  <span style="font-size: 18px; font-weight: bold; color: #0284c7;">₦${item.price.toLocaleString()} <small style="font-size: 12px; font-weight: normal; color: #64748b;">/${item.pricePeriod}</small></span>
+        /* Ambient Glow Effect */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(37, 99, 235, 0.2);
+            filter: blur(120px);
+            border-radius: 50%;
+            top: 5%;
+            left: 10%;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(16, 185, 129, 0.15);
+            filter: blur(120px);
+            border-radius: 50%;
+            bottom: 10%;
+            right: 10%;
+            z-index: 0;
+        }
+
+        /* Navbar Header */
+        header {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .brand-logo span {
+            color: #2563eb;
+        }
+
+        .user-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-auth-outline {
+            color: #38bdf8;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.55rem 1.1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-auth-outline:hover {
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        .btn-auth-solid {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.55rem 1.2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-auth-solid:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.4);
+        }
+
+        .user-profile-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .user-profile-badge i {
+            color: #38bdf8;
+        }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0.55rem 1rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.88rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1150px;
+            width: 92%;
+            margin: 2.5rem auto;
+            flex: 1;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .page-header p {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-top: 0.3rem;
+        }
+
+        /* Glassmorphism Filter Card */
+        .filter-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            margin-bottom: 2.5rem;
+        }
+
+        .filter-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.2rem;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 1rem;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .input-wrapper input,
+        .input-wrapper select {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.8rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            color: #ffffff;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper select option {
+            background: #0f172a;
+            color: #ffffff;
+        }
+
+        .input-wrapper input:focus,
+        .input-wrapper select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+        }
+
+        .btn-search {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: #ffffff;
+            border: none;
+            padding: 0.8rem 1.2rem;
+            font-weight: 600;
+            font-size: 0.92rem;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-search:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px -5px rgba(37, 99, 235, 0.5);
+        }
+
+        /* Property Grid Layout */
+        .property-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.8rem;
+        }
+
+        /* Property Card */
+        .property-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .property-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(37, 99, 235, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-image-box {
+            position: relative;
+            height: 200px;
+            width: 100%;
+            overflow: hidden;
+            background: #1e293b;
+        }
+
+        .card-image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .property-card:hover .card-image-box img {
+            transform: scale(1.05);
+        }
+
+        .type-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(37, 99, 235, 0.85);
+            backdrop-filter: blur(8px);
+            color: #ffffff;
+            padding: 0.35rem 0.75rem;
+            font-size: 0.72rem;
+            border-radius: 8px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        .card-body {
+            padding: 1.4rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .card-location {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .card-price-box {
+            margin-top: auto;
+            margin-bottom: 1.2rem;
+        }
+
+        .card-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #38bdf8;
+        }
+
+        .card-price-period {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #94a3b8;
+        }
+
+        .btn-whatsapp {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            width: 100%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+            padding: 0.75rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-whatsapp:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px -5px rgba(16, 185, 129, 0.45);
+        }
+
+        /* Status Empty / Loading Display */
+        .status-box {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 1rem;
+            color: #94a3b8;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .status-box i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+            color: #64748b;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <a href="index.html" class="brand-logo">
+            <i class="fa-solid fa-house-chimney-window" style="color: #2563eb;"></i>
+            Home<span>Bridge</span>
+        </a>
+        <div class="user-nav" id="navAuthContainer">
+            <!-- Dynamic user status rendered here -->
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="page-header">
+            <h2><i class="fa-solid fa-magnifying-glass-location" style="color: #2563eb;"></i> Available Properties</h2>
+            <p>Explore verified rental spaces across your preferred locations.</p>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="filter-card">
+            <form id="filterForm" class="filter-form">
+                <div class="form-group">
+                    <label><i class="fa-solid fa-location-dot"></i> Area / Neighborhood</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-compass"></i>
+                        <input type="text" id="area" placeholder="e.g. Tanke, GRA">
+                    </div>
                 </div>
-                <a href="https://wa.me/234${ownerPhone.replace(/^0/, '')}?text=Hello,%20I%20am%20interested%20in%20your%20property:%20${encodeURIComponent(item.title)}" target="_blank" style="display: block; text-align: center; background: #22c55e; color: #fff; padding: 9px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px;">WhatsApp Landlord</a>
-              </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-building"></i> Property Type</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-house"></i>
+                        <select id="propertyType">
+                            <option value="">All Types</option>
+                            <option value="Apartment">Apartment</option>
+                            <option value="Duplex">Duplex</option>
+                            <option value="Self Contain">Self Contain</option>
+                            <option value="Single Room">Single Room</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-naira-sign"></i> Max Price (₦)</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-money-bill-wave"></i>
+                        <input type="number" id="maxPrice" placeholder="e.g. 500000">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-search">
+                    <i class="fa-solid fa-filter"></i> Filter Results
+                </button>
+            </form>
+        </div>
+
+        <!-- Live Property Grid -->
+        <div class="property-grid" id="propertyGrid">
+            <div class="status-box">
+                <i class="fa-solid fa-spinner fa-spin" style="color: #2563eb;"></i>
+                <p>Loading available homes...</p>
             </div>
-          `;
-        }).join('');
-      } catch (err) {
-        console.error(err);
-      }
-    }
-  </script>
+        </div>
+    </main>
+
+    <script>
+        const API_BASE_URL = 'https://homebridge-cu1l.onrender.com/api';
+
+        // Helper to retrieve auth details
+        function getToken() {
+            return localStorage.getItem('userToken');
+        }
+
+        // Logout action
+        function handleLogout() {
+            localStorage.removeItem('userToken');
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('userName');
+            window.location.reload();
+        }
+
+        // Initialize Page & Render Navbar Status
+        document.addEventListener('DOMContentLoaded', () => {
+            renderHeaderNav();
+            loadFilteredProperties(`${API_BASE_URL}/properties?status=available`);
+        });
+
+        function renderHeaderNav() {
+            const navContainer = document.getElementById('navAuthContainer');
+            const token = getToken();
+            const storedName = localStorage.getItem('userName');
+
+            if (token) {
+                navContainer.innerHTML = `
+                    <div class="user-profile-badge">
+                        <i class="fa-solid fa-user-check"></i>
+                        <span>${storedName || 'Tenant'}</span>
+                    </div>
+                    <button onclick="handleLogout()" class="btn-logout">
+                        <i class="fa-solid fa-right-from-bracket"></i> Logout
+                    </button>
+                `;
+            } else {
+                navContainer.innerHTML = `
+                    <a href="auth.html" class="btn-auth-outline">Log in</a>
+                    <a href="auth.html" class="btn-auth-solid">Get Started</a>
+                `;
+            }
+        }
+
+        // Handle Filter Submission
+        document.getElementById('filterForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const area = document.getElementById('area').value.trim();
+            const propertyType = document.getElementById('propertyType').value;
+            const maxPrice = document.getElementById('maxPrice').value;
+
+            let queryString = `${API_BASE_URL}/properties?status=available`;
+            if (area) queryString += `&area=${encodeURIComponent(area)}`;
+            if (propertyType) queryString += `&propertyType=${encodeURIComponent(propertyType)}`;
+            if (maxPrice) queryString += `&maxPrice=${maxPrice}`;
+
+            loadFilteredProperties(queryString);
+        });
+
+        // Fetch and Render Property Cards
+        async function loadFilteredProperties(url) {
+            const propertyGrid = document.getElementById('propertyGrid');
+            propertyGrid.innerHTML = `
+                <div class="status-box">
+                    <i class="fa-solid fa-spinner fa-spin" style="color: #2563eb;"></i>
+                    <p>Searching for homes...</p>
+                </div>
+            `;
+
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (!res.ok || !data.data || data.data.length === 0) {
+                    propertyGrid.innerHTML = `
+                        <div class="status-box">
+                            <i class="fa-regular fa-face-frown"></i>
+                            <p>No matching available homes found. Try adjusting your filters.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                propertyGrid.innerHTML = data.data.map((item) => {
+                    const coverImage = (item.images && item.images.length > 0) 
+                        ? item.images[0] 
+                        : 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=600&q=80';
+                    
+                    const ownerPhone = item.owner && item.owner.phone ? item.owner.phone : '';
+                    const areaText = item.location && item.location.area ? item.location.area : 'Location N/A';
+                    const cityText = item.location && item.location.city ? item.location.city : '';
+                    const fullLocation = cityText ? `${areaText}, ${cityText}` : areaText;
+
+                    const formattedPhone = ownerPhone.replace(/^0/, '');
+                    const whatsappMsg = encodeURIComponent(`Hello, I am interested in your property on HomeBridge: ${item.title}`);
+                    const whatsappUrl = `https://wa.me/234${formattedPhone}?text=${whatsappMsg}`;
+
+                    return `
+                        <div class="property-card">
+                            <div class="card-image-box">
+                                <img src="${coverImage}" alt="${item.title}" onerror="this.src='https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=600&q=80'">
+                                <span class="type-badge">${item.propertyType || 'Apartment'}</span>
+                            </div>
+                            <div class="card-body">
+                                <h3 class="card-title">${item.title}</h3>
+                                <p class="card-location"><i class="fa-solid fa-location-dot" style="color: #2563eb;"></i> ${fullLocation}</p>
+                                <div class="card-price-box">
+                                    <span class="card-price">₦${Number(item.price).toLocaleString()}</span>
+                                    <span class="card-price-period">/${item.pricePeriod || 'year'}</span>
+                                </div>
+                                <a href="${whatsappUrl}" target="_blank" class="btn-whatsapp">
+                                    <i class="fa-brands fa-whatsapp" style="font-size: 1.1rem;"></i> Contact Landlord
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error(err);
+                propertyGrid.innerHTML = `
+                    <div class="status-box">
+                        <i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i>
+                        <p style="color: #ef4444;">Unable to connect to the backend server.</p>
+                    </div>
+                `;
+            }
+        }
+    </script>
 </body>
+
 </html>
