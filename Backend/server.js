@@ -27,6 +27,7 @@ dotenv.config();
 connectDB();
 
 // Body Parser & CORS Middleware
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
@@ -47,6 +48,8 @@ const propertyRoutes = require('./routes/propertyRoutes.js');
 // Register Property Route Endpoint
 app.use('/api/properties', propertyRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/properties', require('./routes/propertyRoutes'));
+app.use('/api/payments', require('./routes/paymentRoutes'));
 
 // Base Route
 app.get('/', (req, res) => {
