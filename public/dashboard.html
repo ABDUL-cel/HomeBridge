@@ -334,7 +334,7 @@
 <body>
 
     <header>
-        <a href="index.html" class="brand-logo">
+        <a href="/index.html" class="brand-logo">
             <i class="fa-solid fa-house-chimney-window" style="color: #2563eb;"></i>
             Home<span>Bridge</span>
         </a>
@@ -404,7 +404,7 @@
             localStorage.removeItem('userToken');
             localStorage.removeItem('userRole');
             localStorage.removeItem('userName');
-            window.location.href = 'auth.html';
+            window.location.href = '/auth.html';
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -416,7 +416,7 @@
             }
 
             if (!token) {
-                window.location.href = 'auth.html';
+                window.location.href = '/auth.html';
                 return;
             }
 
