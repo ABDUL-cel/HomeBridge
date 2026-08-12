@@ -30,7 +30,6 @@
             overflow-x: hidden;
         }
 
-        /* Gradient Glow Backgrounds */
         body::before {
             content: '';
             position: absolute;
@@ -57,7 +56,6 @@
             z-index: 0;
         }
 
-        /* Navbar Header */
         header {
             position: relative;
             z-index: 10;
@@ -126,7 +124,6 @@
             color: #ffffff;
         }
 
-        /* Main Container */
         .container {
             position: relative;
             z-index: 10;
@@ -173,7 +170,6 @@
             box-shadow: 0 12px 24px -5px rgba(37, 99, 235, 0.5);
         }
 
-        /* Table Card */
         .table-card {
             background: rgba(255, 255, 255, 0.04);
             backdrop-filter: blur(20px);
@@ -212,17 +208,27 @@
             background: rgba(255, 255, 255, 0.02);
         }
 
-        /* Clickable Property Title */
         .property-title-link {
             font-weight: 600;
             color: #38bdf8;
             text-decoration: none;
-            transition: color 0.2s ease, text-decoration 0.2s ease;
+            transition: color 0.2s ease;
         }
 
         .property-title-link:hover {
             color: #60a5fa;
             text-decoration: underline;
+        }
+
+        .badge-featured {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            margin-left: 0.4rem;
         }
 
         .badge-available {
@@ -313,7 +319,6 @@
             color: #ffffff;
         }
 
-        /* Toast Alert */
         #toast {
             position: fixed;
             bottom: 20px;
@@ -334,7 +339,7 @@
 <body>
 
     <header>
-        <a href="/index.html" class="brand-logo">
+        <a href="index.html" class="brand-logo">
             <i class="fa-solid fa-house-chimney-window" style="color: #2563eb;"></i>
             Home<span>Bridge</span>
         </a>
@@ -385,12 +390,10 @@
     <script>
         const API_BASE_URL = 'https://homebridge-cu1l.onrender.com/api';
 
-        // Helper function to get token safely from localStorage
         function getToken() {
             return localStorage.getItem('userToken');
         }
 
-        // Show feedback message
         function showToast(message, isError = false) {
             const toast = document.getElementById('toast');
             toast.style.background = isError ? '#ef4444' : '#10b981';
@@ -399,12 +402,11 @@
             setTimeout(() => { toast.style.display = 'none'; }, 3000);
         }
 
-        // Handle Logout
         function handleLogout() {
             localStorage.removeItem('userToken');
             localStorage.removeItem('userRole');
             localStorage.removeItem('userName');
-            window.location.href = '/auth.html';
+            window.location.href = 'auth.html';
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -416,14 +418,13 @@
             }
 
             if (!token) {
-                window.location.href = '/auth.html';
+                window.location.href = 'auth.html';
                 return;
             }
 
             await loadProperties();
         });
 
-        // Fetch & Render Properties
         async function loadProperties() {
             const token = getToken();
             const tableBody = document.getElementById('myPropertiesTable');
@@ -448,24 +449,27 @@
                 tableBody.innerHTML = data.data.map(item => `
                     <tr>
                         <td>
-                            <a href="property-details.html?id=${item._id}" class="property-title-link" title="Click to view details">
+                            <a href="property-details.html?id=${item._id}" class="property-title-link">
                                 ${item.title} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.75rem; margin-left: 0.2rem;"></i>
                             </a>
+                            ${item.isFeatured ? '<span class="badge-featured"><i class="fa-solid fa-star"></i> FEATURED</span>' : ''}
                         </td>
                         <td>${item.propertyType || 'Apartment'}</td>
                         <td style="color: #38bdf8; font-weight: 600;">₦${Number(item.price).toLocaleString()}</td>
                         <td>
                             <span class="${item.status === 'available' ? 'badge-available' : 'badge-rented'}">
                                 <i class="fa-solid ${item.status === 'available' ? 'fa-circle-check' : 'fa-circle-xmark'}"></i>
-                                ${item.status ? item.status.toUpperCase() : 'AVAILABLE'}
+                                ${(item.status || 'available').toUpperCase()}
                             </span>
                         </td>
                         <td>
                             <div class="action-group">
-                                <button onclick="payToPromote(5000, '${item._id}')" class="btn-promote" title="Promote Property Listing">
-                                    <i class="fa-solid fa-rectangle-ad"></i> Promote (₦5,000)
-                                </button>
-                                <button onclick="toggleStatus('${item._id}', '${item.status}')" class="btn-action">
+                                ${!item.isFeatured ? `
+                                    <button onclick="payToPromote(5000, '${item._id}')" class="btn-promote">
+                                        <i class="fa-solid fa-rectangle-ad"></i> Promote (₦5,000)
+                                    </button>
+                                ` : ''}
+                                <button onclick="toggleStatus('${item._id}', '${item.status || 'available'}')" class="btn-action">
                                     <i class="fa-solid fa-arrows-rotate"></i>
                                     Mark ${item.status === 'available' ? 'Rented' : 'Available'}
                                 </button>
@@ -487,7 +491,6 @@
             }
         }
 
-        // Toggle Status (Available <-> Rented)
         async function toggleStatus(id, currentStatus) {
             const token = getToken();
             const newStatus = currentStatus === 'available' ? 'rented' : 'available';
@@ -514,7 +517,6 @@
             }
         }
 
-        // Delete Property
         async function deleteProperty(id) {
             if (!confirm('Are you sure you want to delete this property listing?')) return;
 
@@ -539,7 +541,6 @@
             }
         }
 
-        // Paystack Payment Function
         function payToPromote(amount, propertyId) {
             const token = getToken();
             if (!token) {
@@ -552,45 +553,10 @@
             const handler = PaystackPop.setup({
                 key: 'pk_test_95e98d452733f190c4211604c4fb1bc96b412ff1',
                 email: userEmail,
-                amount: amount * 100, // Amount in kobo
-                currency: 'NGN',
-                metadata: {
-                    propertyId: propertyId
-                },
-                onClose: function () {
-                    showToast('Payment window closed.', true);
-                },
-                callback: function (response) {
-                    showToast('Payment successful! Verifying with server...');
-                    verifyPaymentOnServer(response.reference, propertyId);
-                }
-            });
+                amount: amount * 100,
+                currency: 'NGNWhich project or components are you looking for complete code for? 
 
-            handler.openIframe();
-        }
+1. **EduTrust School Portal:** Frontend and backend code for the student result checker & fee payment system.
+2. **Property Management Platform:** Frontend and backend code for the "Add Property" page (with multi-image upload).
 
-        // Verify Payment with Backend Server
-        async function verifyPaymentOnServer(reference, propertyId) {
-            const token = getToken();
-            try {
-                const res = await fetch(`${API_BASE_URL}/payments/verify/${reference}`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                const data = await res.json();
-                if (res.ok && data.success) {
-                    showToast('Promotion active! Property is now promoted.');
-                    loadProperties();
-                } else {
-                    showToast(data.message || 'Payment verification failed', true);
-                }
-            } catch (err) {
-                showToast('Failed to verify payment with server', true);
-            }
-        }
-    </script>
-</body>
-
-</html>
+Let me know which one you'd like to work on (or if you meant something else), and I'll generate the full implementation right away!
