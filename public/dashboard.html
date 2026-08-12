@@ -212,9 +212,17 @@
             background: rgba(255, 255, 255, 0.02);
         }
 
-        .property-title {
+        /* Clickable Property Title */
+        .property-title-link {
             font-weight: 600;
-            color: #ffffff;
+            color: #38bdf8;
+            text-decoration: none;
+            transition: color 0.2s ease, text-decoration 0.2s ease;
+        }
+
+        .property-title-link:hover {
+            color: #60a5fa;
+            text-decoration: underline;
         }
 
         .badge-available {
@@ -439,7 +447,11 @@
 
                 tableBody.innerHTML = data.data.map(item => `
                     <tr>
-                        <td class="property-title">${item.title}</td>
+                        <td>
+                            <a href="property-details.html?id=${item._id}" class="property-title-link" title="Click to view details">
+                                ${item.title} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.75rem; margin-left: 0.2rem;"></i>
+                            </a>
+                        </td>
                         <td>${item.propertyType || 'Apartment'}</td>
                         <td style="color: #38bdf8; font-weight: 600;">₦${Number(item.price).toLocaleString()}</td>
                         <td>
