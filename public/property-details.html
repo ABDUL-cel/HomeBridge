@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Details | HomeBridge</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Background Glows */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 450px;
+            height: 450px;
+            background: rgba(37, 99, 235, 0.18);
+            filter: blur(130px);
+            border-radius: 50%;
+            top: 0%;
+            left: 5%;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(16, 185, 129, 0.12);
+            filter: blur(130px);
+            border-radius: 50%;
+            bottom: 5%;
+            right: 5%;
+            z-index: 0;
+        }
+
+        header {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .brand-logo span {
+            color: #2563eb;
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            padding: 0.55rem 1.1rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.18);
+            transform: translateX(-2px);
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1100px;
+            width: 92%;
+            margin: 2.5rem auto;
+            flex: 1;
+        }
+
+        /* Property Details Grid */
+        .property-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .property-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Image Gallery Styling */
+        .gallery-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .main-image-container {
+            width: 100%;
+            height: 380px;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #090d16;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .main-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+        }
+
+        .thumbnail-list {
+            display: flex;
+            gap: 0.8rem;
+            overflow-x: auto;
+            padding-bottom: 0.4rem;
+        }
+
+        .thumbnail-item {
+            width: 90px;
+            height: 65px;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .thumbnail-item.active,
+        .thumbnail-item:hover {
+            opacity: 1;
+            border-color: #38bdf8;
+        }
+
+        .thumbnail-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Content Sections */
+        .details-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .property-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 1.5rem;
+        }
+
+        .property-title-section h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .location-tag {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .price-tag {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #38bdf8;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .badge-available {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .badge-rented {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .section-heading {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #f1f5f9;
+        }
+
+        .description-text {
+            color: #cbd5e1;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            white-space: pre-line;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .feature-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 0.7rem 1rem;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .feature-item i {
+            color: #38bdf8;
+        }
+
+        /* Sidebar Owner/Agent Card */
+        .owner-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 1.8rem;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .owner-avatar {
+            width: 60px;
+            height: 60px;
+            background: rgba(37, 99, 235, 0.2);
+            border: 1px solid rgba(37, 99, 235, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #38bdf8;
+            margin-bottom: 1rem;
+        }
+
+        .owner-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+        }
+
+        .owner-role {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-contact {
+            width: 100%;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: #ffffff;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.92rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            margin-bottom: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-contact:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .btn-whatsapp {
+            background: #10b981;
+        }
+
+        /* Center Spinner Loader */
+        .loading-state {
+            text-align: center;
+            padding: 5rem 0;
+            color: #94a3b8;
+        }
+
+        .loading-state i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <a href="index.html" class="brand-logo">
+            <i class="fa-solid fa-house-chimney-window" style="color: #2563eb;"></i>
+            Home<span>Bridge</span>
+        </a>
+        <a href="javascript:history.back()" class="btn-back">
+            <i class="fa-solid fa-arrow-left"></i> Go Back
+        </a>
+    </header>
+
+    <main class="container" id="mainContainer">
+        <div class="loading-state">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <p>Fetching property details...</p>
+        </div>
+    </main>
+
+    <script>
+        const API_BASE_URL = 'https://homebridge-cu1l.onrender.com/api';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const propertyId = urlParams.get('id');
+
+            if (!propertyId) {
+                renderError('Invalid Property Request. Property ID is missing.');
+                return;
+            }
+
+            await fetchPropertyDetails(propertyId);
+        });
+
+        async function fetchPropertyDetails(id) {
+            const container = document.getElementById('mainContainer');
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/properties/${id}`);
+                const data = await res.json();
+
+                if (!res.ok || !data.data) {
+                    renderError(data.message || 'Property not found.');
+                    return;
+                }
+
+                renderProperty(data.data);
+            } catch (err) {
+                console.error(err);
+                renderError('Failed to load property details. Please check your internet connection.');
+            }
+        }
+
+        function renderProperty(item) {
+            const container = document.getElementById('mainContainer');
+
+            // Handle location formatting (String or Object)
+            let locationText = 'Location unavailable';
+            if (typeof item.location === 'string') {
+                locationText = item.location;
+            } else if (item.location && typeof item.location === 'object') {
+                locationText = `${item.location.address || ''}${item.location.area ? ', ' + item.location.area : ''}`;
+            }
+
+            // Fallback default image if images array is empty
+            const images = (item.images && item.images.length > 0) 
+                ? item.images 
+                : ['https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1000&q=80'];
+
+            const ownerName = item.owner?.fullName || item.owner?.name || 'Property Host';
+            const ownerEmail = item.owner?.email || '';
+            const ownerPhone = item.owner?.phone || '';
+
+            container.innerHTML = `
+                <div class="property-grid">
+                    <div>
+                        <!-- Gallery Section -->
+                        <div class="gallery-card">
+                            <div class="main-image-container">
+                                <img id="featuredImage" src="${images[0]}" alt="${item.title}">
+                            </div>
+                            ${images.length > 1 ? `
+                                <div class="thumbnail-list">
+                                    ${images.map((imgUrl, index) => `
+                                        <div class="thumbnail-item ${index === 0 ? 'active' : ''}" onclick="changeMainImage('${imgUrl}', this)">
+                                            <img src="${imgUrl}" alt="Property Thumbnail ${index + 1}">
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <!-- Details Section -->
+                        <div class="details-card">
+                            <div class="property-header">
+                                <div class="property-title-section">
+                                    <h1>${item.title}</h1>
+                                    <div class="location-tag">
+                                        <i class="fa-solid fa-location-dot" style="color: #ef4444;"></i>
+                                        ${locationText}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="price-tag">₦${Number(item.price).toLocaleString()}</div>
+                                    <div style="text-align: right; margin-top: 0.4rem;">
+                                        <span class="status-badge ${item.status === 'rented' ? 'badge-rented' : 'badge-available'}">
+                                            <i class="fa-solid ${item.status === 'rented' ? 'fa-circle-xmark' : 'fa-circle-check'}"></i>
+                                            ${(item.status || 'available').toUpperCase()}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 1.8rem;">
+                                <h3 class="section-heading">Description</h3>
+                                <p class="description-text">${item.description || 'No description provided for this property.'}</p>
+                            </div>
+
+                            ${item.features && item.features.length > 0 ? `
+                                <div>
+                                    <h3 class="section-heading">Key Features & Amenities</h3>
+                                    <div class="features-grid">
+                                        ${item.features.map(feat => `
+                                            <div class="feature-item">
+                                                <i class="fa-solid fa-circle-check"></i> ${feat}
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+
+                    <!-- Sidebar Owner Contact -->
+                    <div>
+                        <div class="owner-card">
+                            <div class="owner-avatar">
+                                <i class="fa-solid fa-user-shield"></i>
+                            </div>
+                            <div class="owner-name">${ownerName}</div>
+                            <div class="owner-role">Listed Owner / Authorized Agent</div>
+
+                            ${ownerPhone ? `
+                                <a href="tel:${ownerPhone}" class="btn-contact">
+                                    <i class="fa-solid fa-phone"></i> Call Host (${ownerPhone})
+                                </a>
+                                <a href="https://wa.me/${ownerPhone.replace(/[^0-9]/g, '')}?text=Hello, I am interested in your property: ${encodeURIComponent(item.title)}" target="_blank" class="btn-contact btn-whatsapp">
+                                    <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
+                                </a>
+                            ` : ''}
+
+                            ${ownerEmail ? `
+                                <a href="mailto:${ownerEmail}?subject=Inquiry about ${encodeURIComponent(item.title)}" class="btn-contact" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">
+                                    <i class="fa-regular fa-envelope"></i> Send Email
+                                </a>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function changeMainImage(src, element) {
+            const featuredImg = document.getElementById('featuredImage');
+            featuredImg.src = src;
+
+            document.querySelectorAll('.thumbnail-item').forEach(thumb => {
+                thumb.classList.remove('active');
+            });
+            element.classList.add('active');
+        }
+
+        function renderError(message) {
+            const container = document.getElementById('mainContainer');
+            container.innerHTML = `
+                <div class="loading-state">
+                    <i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i>
+                    <p style="color: #f87171; font-weight: 600;">${message}</p>
+                    <a href="index.html" class="btn-back" style="display: inline-flex; margin-top: 1.5rem;">Return to Homepage</a>
+                </div>
+            `;
+        }
+    </script>
+</body>
+
+</html>
