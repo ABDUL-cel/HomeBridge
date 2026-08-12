@@ -30,7 +30,7 @@
             overflow-x: hidden;
         }
 
-        /* Gradient Glow Backgrounds */
+        /* Ambient Background Glows */
         body::before {
             content: '';
             position: absolute;
@@ -212,7 +212,7 @@
             background: rgba(255, 255, 255, 0.02);
         }
 
-        /* Clickable Property Title */
+        /* Property Title Link */
         .property-title-link {
             font-weight: 600;
             color: #38bdf8;
@@ -430,11 +430,35 @@
 
             try {
                 const res = await fetch(`${API_BASE_URL}/properties/my-listings`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
                 });
+
                 const data = await res.json();
 
-                if (!res.ok || !data.data || data.data.length === 0) {
+                // Handle unauthorized or expired session
+                if (res.status === 401 || res.status === 403) {
+                    showToast('Session expired or unauthorized. Please log in again.', true);
+                    setTimeout(() => handleLogout(), 2000);
+                    return;
+                }
+
+                // Handle backend error responses
+                if (!res.ok) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: #ef4444; padding: 2rem;">
+                                <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.5rem; margin-bottom: 0.5rem; display: block;"></i>
+                                ${data.message || 'Error loading listings from server.'}
+                            </td>
+                        </tr>`;
+                    return;
+                }
+
+                // Handle empty property list
+                if (!data.data || data.data.length === 0) {
                     tableBody.innerHTML = `
                         <tr>
                             <td colspan="5" style="text-align: center; color: #94a3b8; padding: 2.5rem;">
@@ -445,6 +469,7 @@
                     return;
                 }
 
+                // Render properties table rows
                 tableBody.innerHTML = data.data.map(item => `
                     <tr>
                         <td>
@@ -453,11 +478,11 @@
                             </a>
                         </td>
                         <td>${item.propertyType || 'Apartment'}</td>
-                        <td style="color: #38bdf8; font-weight: 600;">₦${Number(item.price).toLocaleString()}</td>
+                        <td style="color: #38bdf8; font-weight: 600;">₦${Number(item.price || 0).toLocaleString()}</td>
                         <td>
                             <span class="${item.status === 'available' ? 'badge-available' : 'badge-rented'}">
                                 <i class="fa-solid ${item.status === 'available' ? 'fa-circle-check' : 'fa-circle-xmark'}"></i>
-                                ${item.status ? item.status.toUpperCase() : 'AVAILABLE'}
+                                ${(item.status || 'available').toUpperCase()}
                             </span>
                         </td>
                         <td>
@@ -465,7 +490,7 @@
                                 <button onclick="payToPromote(5000, '${item._id}')" class="btn-promote" title="Promote Property Listing">
                                     <i class="fa-solid fa-rectangle-ad"></i> Promote (₦5,000)
                                 </button>
-                                <button onclick="toggleStatus('${item._id}', '${item.status}')" class="btn-action">
+                                <button onclick="toggleStatus('${item._id}', '${item.status || 'available'}')" class="btn-action">
                                     <i class="fa-solid fa-arrows-rotate"></i>
                                     Mark ${item.status === 'available' ? 'Rented' : 'Available'}
                                 </button>
@@ -476,12 +501,14 @@
                         </td>
                     </tr>
                 `).join('');
+
             } catch (err) {
-                console.error(err);
+                console.error('Fetch error:', err);
                 tableBody.innerHTML = `
                     <tr>
                         <td colspan="5" style="text-align: center; color: #ef4444; padding: 2rem;">
-                            Failed to connect to backend server.
+                            <i class="fa-solid fa-wifi" style="font-size: 1.5rem; margin-bottom: 0.5rem; display: block;"></i>
+                            Failed to connect to backend server. Render instance may be sleeping—try refreshing in 30 seconds.
                         </td>
                     </tr>`;
             }
@@ -547,7 +574,7 @@
                 return;
             }
 
-            const userEmail = localStorage.getItem('userEmail') || 'khalidabdulazeez19@gmail.com';
+            const userEmail = localStorage.getItem('userEmail') || 'user@example.com';
 
             const handler = PaystackPop.setup({
                 key: 'pk_test_95e98d452733f190c4211604c4fb1bc96b412ff1',
