@@ -469,38 +469,49 @@
                     return;
                 }
 
-                // Render properties table rows
-                tableBody.innerHTML = data.data.map(item => `
-                    <tr>
-                        <td>
-                            <a href="property-details.html?id=${item._id}" class="property-title-link" title="Click to view details">
-                                ${item.title} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.75rem; margin-left: 0.2rem;"></i>
-                            </a>
-                        </td>
-                        <td>${item.propertyType || 'Apartment'}</td>
-                        <td style="color: #38bdf8; font-weight: 600;">₦${Number(item.price || 0).toLocaleString()}</td>
-                        <td>
-                            <span class="${item.status === 'available' ? 'badge-available' : 'badge-rented'}">
-                                <i class="fa-solid ${item.status === 'available' ? 'fa-circle-check' : 'fa-circle-xmark'}"></i>
-                                ${(item.status || 'available').toUpperCase()}
-                            </span>
-                        </td>
-                        <td>
-                            <div class="action-group">
-                                <button onclick="payToPromote(5000, '${item._id}')" class="btn-promote" title="Promote Property Listing">
-                                    <i class="fa-solid fa-rectangle-ad"></i> Promote (₦5,000)
-                                </button>
-                                <button onclick="toggleStatus('${item._id}', '${item.status || 'available'}')" class="btn-action">
-                                    <i class="fa-solid fa-arrows-rotate"></i>
-                                    Mark ${item.status === 'available' ? 'Rented' : 'Available'}
-                                </button>
-                                <button onclick="deleteProperty('${item._id}')" class="btn-delete" title="Delete Property">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `).join('');
+            // Inside loadProperties() function in landlord-dashboard.html
+tableBody.innerHTML = data.data.map(item => {
+    const imageUrl = (item.images && item.images.length > 0) 
+        ? item.images[0] 
+        : 'https://via.placeholder.com/60x60?text=No+Image';
+
+    return `
+        <tr>
+            <td>
+                <div style="display: flex; align-items: center; gap: 0.8rem;">
+                    <img src="${imageUrl}" alt="${item.title}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);" />
+                    <div>
+                        <a href="property-details.html?id=${item._id}" class="property-title-link" title="Click to view details">
+                            ${item.title}
+                        </a>
+                        <div style="font-size: 0.75rem; color: #94a3b8;">${item.location || 'N/A'}</div>
+                    </div>
+                </div>
+            </td>
+            <td>${item.propertyType || 'Apartment'}</td>
+            <td style="color: #38bdf8; font-weight: 600;">₦${Number(item.price || 0).toLocaleString()}</td>
+            <td>
+                <span class="${item.status === 'available' ? 'badge-available' : 'badge-rented'}">
+                    <i class="fa-solid ${item.status === 'available' ? 'fa-circle-check' : 'fa-circle-xmark'}"></i>
+                    ${(item.status || 'available').toUpperCase()}
+                </span>
+            </td>
+            <td>
+                <div class="action-group">
+                    <button onclick="payToPromote(5000, '${item._id}')" class="btn-promote">
+                        <i class="fa-solid fa-rectangle-ad"></i> Promote (₦5,000)
+                    </button>
+                    <button onclick="toggleStatus('${item._id}', '${item.status || 'available'}')" class="btn-action">
+                        Mark ${item.status === 'available' ? 'Rented' : 'Available'}
+                    </button>
+                    <button onclick="deleteProperty('${item._id}')" class="btn-delete">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `;
+}).join('');
 
             } catch (err) {
                 console.error('Fetch error:', err);
