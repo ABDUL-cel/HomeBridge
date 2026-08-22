@@ -1,5 +1,32 @@
 const Property = require('../models/Property');
+// Get all properties for tenants (index.html / public search)
+exports.getAllProperties = async (req, res) => {
+    try {
+        const properties = await Property.find()
+            .populate('postedBy', 'name email phone') // Includes Landlord contact info!
+            .sort({ isPromoted: -1, createdAt: -1 });
 
+        res.status(200).json({ success: true, data: properties });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// Get single property details (property-details.html)
+exports.getPropertyById = async (req, res) => {
+    try {
+        const property = await Property.findById(req.params.id)
+            .populate('postedBy', 'name email phone');
+
+        if (!property) {
+            return res.status(404).json({ success: false, message: 'Property not found' });
+        }
+
+        res.status(200).json({ success: true, data: property });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
 // @desc    Get all properties (Featured first)
 // @route   GET /api/properties
 // @access  Public
